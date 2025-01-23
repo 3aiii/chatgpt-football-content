@@ -10,6 +10,13 @@ import Blog from "./pages/user/blog";
 import Admin from "./layouts/Admin";
 import Edit from "./pages/user/Edit";
 import System from "./pages/user/System";
+import BlogAdmin from "./pages/admin/BlogAdmin";
+import UserAdmin from "./pages/admin/UserAdmin";
+import BlogAdminInsert from "./pages/admin/BlogAdminInsert";
+import BlogAdminEdit from "./pages/admin/BlogAdminEdit";
+import UserAdminInsert from "./pages/admin/UserAdminInsert";
+import UserAdminEdit from "./pages/admin/UserAdminEdit";
+import CategoriesInsert from "./pages/admin/CategoriesInsert";
 
 const App = () => {
   return (
@@ -26,10 +33,15 @@ const App = () => {
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Registraion />} />
         </Route>
-        <Route element={<Admin />}>
-          <Route path="/admin/dashboard" />
-          <Route path="/admin/blog" />
-          <Route path="/admin/user" />
+        <Route path="/admin" element={<Admin />}>
+          <Route path="blogs" element={<BlogAdmin />} />
+          <Route path="blogs/insert" element={<BlogAdminInsert />} />
+          <Route path="blog/:id" element={<BlogAdminEdit />} />
+          <Route path="users" element={<UserAdmin />} />
+          <Route path="users/insert" element={<UserAdminInsert />} />
+          <Route path="user/:id" element={<UserAdminEdit />} />
+          <Route path="categories" element={<UserAdmin />} />
+          <Route path="categories/insert" element={<CategoriesInsert />} />
         </Route>
       </Routes>
     </BrowserRouter>

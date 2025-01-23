@@ -1,5 +1,6 @@
 import React from "react";
 import RecommendCard from "./RecommendCard";
+import { FaSignsPost } from "react-icons/fa6";
 
 const Sidebar = () => {
   return (
@@ -10,7 +11,10 @@ const Sidebar = () => {
         บทความ
       </div>
       <div className="bg-white border-[1px] rounded-br-lg rounded-bl-lg text-center px-4 py-2">
-        <p className="text-lg font-semibold">บทความที่แนะนำ 5 บทความ</p>
+        <p className="flex items-center gap-2 text-lg font-semibold text-[#37003c]">
+          <FaSignsPost />
+          บทความที่แนะนำ 5 บทความ
+        </p>
         <RecommendCard />
         <RecommendCard />
         <RecommendCard />

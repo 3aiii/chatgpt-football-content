@@ -23,7 +23,7 @@ const Index = () => {
       {isEditPage ? (
         <></>
       ) : (
-        <div className="w-[1280px]">
+        <div className="w-full bg-[#37003c] text-white mt-6">
           <Footer />
         </div>
       )}

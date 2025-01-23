@@ -7,7 +7,7 @@ const Auth = () => {
     location.pathname === "/login" ? "w-[900px]" : "w-[1280px]";
 
   return (
-    <div className="flex items-center justify-center w-full h-screen bg-gradient-to-b from-[#0d4fa4] via-[#187bcd] to-[#8fcffd]">
+    <div className="flex items-center justify-center w-full h-screen bg-gradient-to-r from-[#37003c] to-[#6a1b9a]">
       <div
         className={`flex ${containerWidth} bg-white border rounded-lg shadow-md`}
       >

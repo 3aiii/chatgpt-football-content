@@ -1,37 +1,49 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Navbar = () => {
+  const location = useLocation();
   const isLogin = true;
 
   return (
     <div className="flex flex-col">
       <div className="flex justify-between items-center py-4 w-[1280px]">
         <div className="flex">
-          <div className="text-xl font-semibold font-[Pacifico] text-blue-500 cursor-default">
+          <div className="bg-white p-1 px-6 rounded-lg text-xl font-medium font-[Pacifico] text-blue-500 cursor-default">
             The AI Football Desk
           </div>
           <ul className="flex text-center text-white items-center gap-x-6 ml-6 text-xl font-semibold">
             <li>
-              <Link className="hover:border-b-2 transition" to={"/"}>
+              <Link
+                className={`hover:border-b-2 transition ${
+                  location.pathname === "/" ? `border-b-2` : ``
+                }`}
+                to={"/"}
+              >
                 หน้าหลัก
               </Link>
             </li>
             <li>
-              <Link className="hover:border-b-2 transition" to={"/blogs"}>
+              <Link
+                className={`hover:border-b-2 transition ${
+                  location.pathname === "/blogs" ? `border-b-2` : ``
+                }`}
+                to={"/blogs"}
+              >
                 บทความ
               </Link>
             </li>
             <li>
               <Link
-                className="flex items-center gap-2 transition"
+                className={`flex items-center gap-2 transition ${
+                  location.pathname === "/system" ? `border-b-2` : ``
+                }`}
                 to={"/system"}
               >
                 ใช้งานระบบ{" "}
                 <div className="bg-blue-500 text-xs rounded-md px-4 py-[2px]">
                   แนะนำ
                 </div>
-                {/* <MdRecommend className="text-blue-500"/> */}
               </Link>
             </li>
           </ul>
