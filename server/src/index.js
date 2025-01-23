@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const { PrismaClient } = require("@prisma/client");
+const rootRouter = require("./routes");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 const prisma = new PrismaClient();
@@ -8,8 +10,10 @@ const prisma = new PrismaClient();
 require("dotenv").config();
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(
   cors({
+    origin: "http://localhost:5173",
     credentials: true,
   })
 );
@@ -34,5 +38,7 @@ const main = () => {
   startServer();
   connectDataBase();
 };
+
+app.use("/api", rootRouter);
 
 main();

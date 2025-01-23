@@ -19,6 +19,7 @@ model User {
   password  String
   email     String     @unique
   tel       Int
+  role      String     @default("USER")
   createdAt DateTime   @default(now())
   updateAt  DateTime   @updatedAt
   UserLog   User_log[]
@@ -36,12 +37,22 @@ model User_log {
 }
 
 model Blog {
-  id        String   @id @default(uuid())
-  name      String
-  content   String?
-  image     String?
-  createdAt DateTime @default(now())
-  updateAt  DateTime @updatedAt
-  user      User?    @relation(fields: [user_id], references: [id])
-  user_id   Int?
+  id         String    @id @default(uuid())
+  name       String
+  content    String?
+  image      String?
+  status     String    @default("ACTIVE")
+  createdAt  DateTime  @default(now())
+  updateAt   DateTime  @updatedAt
+  user       User?     @relation(fields: [user_id], references: [id])
+  user_id    Int?
+  Category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId Int?
+}
+
+model Category {
+  id       Int      @id @default(autoincrement())
+  name     String
+  updateAt DateTime @updatedAt
+  blogs    Blog[]
 }

@@ -5,11 +5,32 @@
 @layer {
   * {
     font-family: "Prompt", serif;
+    padding: 0;
+    margin: 0;
+  }
+
+  label {
+    font-size: 18px;
+    line-height: 28px;
+    margin-bottom: 4px;
+    margin-left: 4px;
   }
 }
 
 .btn {
-  @apply w-full p-2 text-white rounded-md;
+  @apply text-white rounded-md;
+}
+
+.btn-purple {
+  @apply bg-[#37003c] hover:bg-transparent transition font-semibold hover:text-[#37003c] hover:border-[1px] hover:border-[#37003c] text-white rounded-md;
+}
+
+.btn-primary {
+  @apply bg-white text-[#37003c] px-4 py-2 rounded-lg transition;
+}
+
+.btn-transparent {
+  @apply bg-transparent border text-white rounded-lg hover:bg-white hover:text-black transition;
 }
 
 .btn-success {
@@ -24,14 +45,26 @@
   @apply bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition;
 }
 
+.btn-cancel {
+  @apply bg-gray-500 py-2 px-4 text-white rounded-lg hover:bg-gray-600 transition;
+}
+
 .btn-info {
   @apply bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition;
 }
 
 .btn-edit {
-  @apply bg-blue-500 py-2 px-2 text-white pl-4 rounded-md text-xl hover:bg-blue-600 transition;
+  @apply bg-blue-500 py-2 px-2 text-white pl-4 rounded-md hover:bg-blue-600 transition;
 }
 
 .btn-delete {
-  @apply bg-red-500 py-2 px-2 text-white pl-4 rounded-md text-xl hover:bg-red-600 transition;
+  @apply bg-red-500 py-2 px-2 text-white pl-4 rounded-md hover:bg-red-600 transition;
+}
+
+.container-input {
+  @apply flex flex-col;
+}
+
+.input-field {
+  @apply border text-base p-2 focus:outline-none focus:border-black;
 }
