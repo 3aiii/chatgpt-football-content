@@ -68,7 +68,7 @@ const Edit = () => {
         </div>
         <div className="flex justify-center items-center w-[50%]">
           <img
-            src="/public/fruit_object.png"
+            src="/fruit_object.png"
             className="w-[400px] h-[400px] object-contain"
           />
         </div>

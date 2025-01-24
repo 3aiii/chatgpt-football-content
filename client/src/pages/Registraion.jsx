@@ -37,7 +37,9 @@ const Registraion = () => {
       <div className="flex flex-col w-[50%] m-12">
         <div className="flex gap-2">
           <div className="container-input w-full">
-            <label>ชื่อผู้ใช้งาน</label>
+            <label>
+              ชื่อผู้ใช้งาน <span className="text-red-500">*</span>
+            </label>
             <input
               type="text"
               placeholder="ชื่อผู้ใช้งาน"
@@ -45,7 +47,9 @@ const Registraion = () => {
             />
           </div>
           <div className="container-input w-full">
-            <label>รหัสผ่าน</label>
+            <label>
+              รหัสผ่าน <span className="text-red-500">*</span>
+            </label>
             <input
               type="password"
               placeholder="รหัสผ่าน"
@@ -55,20 +59,28 @@ const Registraion = () => {
         </div>
         <div className="flex gap-2 mt-4">
           <div className="container-input w-full">
-            <label>ชื่อ</label>
+            <label>
+              ชื่อ <span className="text-red-500">*</span>
+            </label>
             <input type="text" placeholder="ชื่อ" className="input-field" />
           </div>
           <div className="container-input w-full">
-            <label>นามสกุล</label>
+            <label>
+              นามสกุล <span className="text-red-500">*</span>
+            </label>
             <input type="text" placeholder="นามสกุล" className="input-field" />
           </div>
         </div>
         <div className="container-input w-full mt-4">
-          <label>อีเมล์</label>
+          <label>
+            อีเมล์ <span className="text-red-500">*</span>
+          </label>
           <input type="text" placeholder="อีเมล์" className="input-field" />
         </div>
         <div className="container-input w-full mt-4">
-          <label>เบอร์โทร</label>
+          <label>
+            เบอร์โทร <span className="text-red-500">*</span>
+          </label>
           <input type="text" placeholder="เบอร์โทร" className="input-field" />
         </div>
         <div className="flex justify-end gap-2 mt-4">

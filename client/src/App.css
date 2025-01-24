@@ -14,6 +14,7 @@
     line-height: 28px;
     margin-bottom: 4px;
     margin-left: 4px;
+    font-weight: 500;
   }
 }
 
@@ -26,39 +27,39 @@
 }
 
 .btn-primary {
-  @apply bg-white text-[#37003c] px-4 py-2 rounded-lg transition;
+  @apply bg-white text-[#37003c] px-4 py-2 rounded-md transition;
 }
 
 .btn-transparent {
-  @apply bg-transparent border text-white rounded-lg hover:bg-white hover:text-black transition;
+  @apply bg-transparent border text-white rounded-md hover:bg-white hover:text-black transition;
 }
 
 .btn-success {
-  @apply bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition;
+  @apply bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition;
 }
 
 .btn-danger {
-  @apply bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition;
+  @apply bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition;
 }
 
 .btn-warning {
-  @apply bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition;
+  @apply bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600 transition;
 }
 
 .btn-cancel {
-  @apply bg-gray-500 py-2 px-4 text-white rounded-lg hover:bg-gray-600 transition;
+  @apply bg-gray-500 py-2 px-4 text-white rounded-md hover:bg-gray-600 transition;
 }
 
 .btn-info {
-  @apply bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition;
+  @apply bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition;
 }
 
 .btn-edit {
-  @apply bg-blue-500 py-2 px-2 text-white pl-4 rounded-md hover:bg-blue-600 transition;
+  @apply bg-blue-500 py-2 px-2 text-white rounded-md hover:bg-blue-600 transition;
 }
 
 .btn-delete {
-  @apply bg-red-500 py-2 px-2 text-white pl-4 rounded-md hover:bg-red-600 transition;
+  @apply bg-red-500 py-2 px-2 text-white rounded-md hover:bg-red-600 transition;
 }
 
 .container-input {
@@ -67,4 +68,12 @@
 
 .input-field {
   @apply border text-base p-2 focus:outline-none focus:border-black;
+}
+
+.li-field {
+  @apply flex text-lg rounded-md font-semibold items-center gap-2 w-full py-2 px-4 hover:bg-gradient-to-r hover:from-purple-500 hover:to-indigo-500 hover:text-white transition-all duration-150;
+}
+
+.col-field {
+  @apply px-6 py-3 text-left text-sm font-medium;
 }

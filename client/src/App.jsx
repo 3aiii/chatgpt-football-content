@@ -16,7 +16,7 @@ import BlogAdminInsert from "./pages/admin/BlogAdminInsert";
 import BlogAdminEdit from "./pages/admin/BlogAdminEdit";
 import UserAdminInsert from "./pages/admin/UserAdminInsert";
 import UserAdminEdit from "./pages/admin/UserAdminEdit";
-import CategoriesInsert from "./pages/admin/CategoriesInsert";
+import CategoriesAdmin from "./pages/admin/CategoriesAdmin";
 
 const App = () => {
   return (
@@ -40,8 +40,7 @@ const App = () => {
           <Route path="users" element={<UserAdmin />} />
           <Route path="users/insert" element={<UserAdminInsert />} />
           <Route path="user/:id" element={<UserAdminEdit />} />
-          <Route path="categories" element={<UserAdmin />} />
-          <Route path="categories/insert" element={<CategoriesInsert />} />
+          <Route path="categories" element={<CategoriesAdmin />} />
         </Route>
       </Routes>
     </BrowserRouter>
