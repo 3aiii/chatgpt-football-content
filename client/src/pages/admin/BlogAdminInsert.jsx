@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { fetchs } from "../../composables/useCate";
 
 const BlogAdminInsert = () => {
+  const [categories, setCategories] = useState([]);
   const [formData, setFormData] = useState({
     image: null,
     title: "",
     content: "",
+    category: "",
   });
 
   const handleInputChange = (e) => {
@@ -15,7 +18,7 @@ const BlogAdminInsert = () => {
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setFormData({ ...formData, image: URL.createObjectURL(file) }); // สร้าง URL สำหรับแสดงรูป
+      setFormData({ ...formData, image: URL.createObjectURL(file) });
     }
   };
 
@@ -23,6 +26,18 @@ const BlogAdminInsert = () => {
     console.log("Form Data:", formData);
     alert("ข้อมูลถูกส่งเรียบร้อยแล้ว");
   };
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const categories = await fetchs();
+        setCategories(categories);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   return (
     <div className="p-4">
@@ -53,18 +68,37 @@ const BlogAdminInsert = () => {
         )}
 
         {/* Title */}
-        <div className="container-input w-full mt-4">
-          <label>
-            หัวข้อ <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            name="title"
-            placeholder="หัวข้อบทความ"
-            value={formData.title}
-            onChange={handleInputChange}
-            className="input-field"
-          />
+        <div className="flex gap-4 mt-4">
+          <div className="container-input w-full ">
+            <label>
+              หัวข้อ <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              name="title"
+              placeholder="หัวข้อบทความ"
+              value={formData.title}
+              onChange={handleInputChange}
+              className="input-field"
+            />
+          </div>
+          <div className="container-input w-full">
+            <label>
+              หมวดหมู่บทความ <span className="text-red-500">*</span>
+            </label>
+            <select
+              name="category"
+              className="input-field"
+              onChange={handleInputChange}
+            >
+              <option value="">เลือกหมวดหมู่</option>
+              {categories?.data?.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {/* Content */}

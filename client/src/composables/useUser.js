@@ -70,3 +70,8 @@ export const fetchs = async (search, page, pageSize) => {
 
   return response.data;
 };
+export const remove = async (userId) => {
+  const response = await axios.delete(`${HOST_URL}/user/${userId}`);
+
+  return response.data;
+};

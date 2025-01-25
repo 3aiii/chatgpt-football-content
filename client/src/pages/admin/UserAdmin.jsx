@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
-import { fetchs } from "./../../composables/useUser";
+import { fetchs, remove } from "./../../composables/useUser";
 import { formatDate } from "./../../utils/formatDate";
 import Pagination from "../../components/admin/Pagination";
+import Swal from "sweetalert2";
 
 const UserAdmin = () => {
   const [users, setUser] = useState([]);
@@ -20,6 +21,49 @@ const UserAdmin = () => {
     }
     setUser(data.data);
     setTotalPages(data.pagination.totalPages);
+  };
+
+  const handleRemove = async (userId) => {
+    const confirmResult = await Swal.fire({
+      title: "คุณแน่ใจหรือไม่?",
+      text: "คุณจะไม่สามารถกู้คืนข้อมูลนี้ได้อีก!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ยืนยันการลบ",
+      cancelButtonText: "ยกเลิก",
+    });
+
+    if (confirmResult.isConfirmed) {
+      try {
+        const response = await remove(userId);
+        if (response.success) {
+          Swal.fire({
+            title: "ลบสำเร็จ!",
+            text: "ข้อมูลผู้ใช้งานถูกลบเรียบร้อยแล้ว",
+            icon: "success",
+            confirmButtonText: "ตกลง",
+          }).then(() => {
+            fetchData();
+          });
+        } else {
+          Swal.fire({
+            title: "เกิดข้อผิดพลาด",
+            text: response.message || "ไม่สามารถลบผู้ใช้งานได้",
+            icon: "error",
+            confirmButtonText: "ตกลง",
+          });
+        }
+      } catch (error) {
+        Swal.fire({
+          title: "เกิดข้อผิดพลาด",
+          text: error.response?.data?.message || "ไม่สามารถลบผู้ใช้งานได้",
+          icon: "error",
+          confirmButtonText: "ตกลง",
+        });
+      }
+    }
   };
 
   const handlePageChange = (newPage) => {
@@ -115,10 +159,15 @@ const UserAdmin = () => {
                     {user.role}
                   </td>
                   <td className="px-6 py-4 text-base text-gray-700 flex gap-2">
-                    <Link to={`/admin/user/${user.id}`} className="btn-edit">
+                    <Link to={`/admin/user/${user?.id}`} className="btn-edit">
                       แก้ไขข้อมูล
                     </Link>
-                    <button className="btn-danger">ลบข้อมูล</button>
+                    <button
+                      className="btn-danger"
+                      onClick={() => handleRemove(user?.id)}
+                    >
+                      ลบข้อมูล
+                    </button>
                   </td>
                 </tr>
               ))

@@ -16,7 +16,7 @@ const Admin = () => {
     }
 
     switch (path) {
-      case "/admin":
+      case "/admin/dashboard":
         return "หน้าหลัก";
       case "/admin/users":
         return "ผู้ใช้งานทั้งหมด";

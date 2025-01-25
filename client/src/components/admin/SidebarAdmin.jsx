@@ -5,7 +5,7 @@ import { IoIosLogOut } from "react-icons/io";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
-import { fetch } from "../../composables/useUser";
+import { fetch, logout } from "../../composables/useUser";
 
 const SidebarAdmin = () => {
   const location = useLocation();
@@ -88,9 +88,9 @@ const SidebarAdmin = () => {
       <ul className="w-full space-y-2 pt-6">
         <li>
           <Link
-            to={"/admin"}
+            to={"/admin/dashboard"}
             className={`li-field ${
-              isActive("/admin")
+              isActive("/admin/dashboard")
                 ? "bg-gradient-to-r from-purple-500 to-indigo-500 font-semibold text-white"
                 : "text-gray-700"
             }`}

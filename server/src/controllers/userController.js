@@ -61,6 +61,7 @@ module.exports = {
         role: user.role,
       });
     } catch (error) {
+      await logLogged(user.id, username, "Error", error.message);
       return res.status(500).send({
         success: false,
         message: error.message,
@@ -86,7 +87,7 @@ module.exports = {
       await logLogged(
         user.id,
         user.username,
-        "Logout success",
+        "Success",
         "Logged out successfully"
       );
 
@@ -97,6 +98,7 @@ module.exports = {
         message: "Logged out successfully!",
       });
     } catch (error) {
+      await logLogged(user.id, user.username, "Error", error.message);
       return res.status(400).send({
         success: false,
         message: error.message,
@@ -328,8 +330,6 @@ module.exports = {
         message: "User updated successfully",
       });
     } catch (error) {
-      console.log(error);
-
       if (error.meta?.target === "tbl_User_username_key") {
         return res.status(400).send({
           success: false,

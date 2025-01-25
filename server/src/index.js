@@ -3,6 +3,7 @@ const cors = require("cors");
 const { PrismaClient } = require("@prisma/client");
 const rootRouter = require("./routes");
 const cookieParser = require("cookie-parser");
+const path = require("path");
 
 const app = express();
 const prisma = new PrismaClient();
@@ -40,5 +41,6 @@ const main = () => {
 };
 
 app.use("/api", rootRouter);
+app.use("/image", express.static(path.join(__dirname, "uploads")));
 
 main();

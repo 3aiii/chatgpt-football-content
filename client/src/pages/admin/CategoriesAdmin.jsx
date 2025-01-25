@@ -1,17 +1,84 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BiSolidCategoryAlt } from "react-icons/bi";
+import { fetchs, create, update, remove } from "../../composables/useCate";
+import Swal from "sweetalert2";
+import Pagination from "../../components/admin/Pagination";
+import { formatDate } from "../../utils/formatDate";
 
 const CategoriesAdmin = () => {
-  const [categories, setCategories] = useState([
-    { id: 1, name: "หมวดหมู่ตัวอย่าง 1", createdAt: "2025-01-01 10:00" },
-    { id: 2, name: "หมวดหมู่ตัวอย่าง 2", createdAt: "2025-01-02 15:00" },
-  ]);
+  const [categories, setCategories] = useState([]);
   const [editingCategory, setEditingCategory] = useState(null); // เก็บข้อมูลหมวดหมู่ที่กำลังแก้ไข
   const [categoryName, setCategoryName] = useState(""); // เก็บชื่อหมวดหมู่ในฟอร์ม
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(8);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const handleEdit = (category) => {
-    setEditingCategory(category);
-    setCategoryName(category.name);
+  // เพิ่มหรือแก้ไขหมวดหมู่
+  const handleSubmit = async () => {
+    try {
+      if (editingCategory) {
+        // แก้ไขหมวดหมู่
+        await update({ name: categoryName }, editingCategory.id);
+        Swal.fire({
+          icon: "success",
+          title: "สำเร็จ",
+          text: "แก้ไขหมวดหมู่สำเร็จ!",
+        }).then(() => {
+          loadCategories();
+        });
+      } else {
+        // เพิ่มหมวดหมู่ใหม่
+        await create({ name: categoryName });
+        Swal.fire({
+          icon: "success",
+          title: "สำเร็จ",
+          text: "เพิ่มหมวดหมู่ใหม่สำเร็จ!",
+        }).then(() => {
+          loadCategories();
+        });
+      }
+      setCategoryName("");
+      setEditingCategory(null);
+    } catch (error) {
+      await Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดพลาด",
+        text: error.message,
+      });
+    }
+  };
+
+  // ลบหมวดหมู่
+  const handleDelete = async (id) => {
+    const result = await Swal.fire({
+      title: "ยืนยันการลบ",
+      text: "คุณต้องการลบข้อมูลนี้ใช่หรือไม่?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "ยืนยัน",
+      cancelButtonText: "ยกเลิก",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await remove(id); // เรียก API เพื่อลบหมวดหมู่
+        Swal.fire({
+          icon: "success",
+          title: "สำเร็จ",
+          text: "ลบหมวดหมู่สำเร็จ!",
+        }).then(() => {
+          loadCategories();
+        });
+      } catch (error) {
+        await Swal.fire({
+          icon: "error",
+          title: "เกิดข้อผิดพลาด",
+          text: error.message,
+        });
+      }
+    }
   };
 
   const handleCancelEdit = () => {
@@ -19,35 +86,27 @@ const CategoriesAdmin = () => {
     setCategoryName("");
   };
 
-  const handleSubmit = () => {
-    if (editingCategory) {
-      // อัปเดตข้อมูลหมวดหมู่
-      setCategories((prevCategories) =>
-        prevCategories.map((cat) =>
-          cat.id === editingCategory.id ? { ...cat, name: categoryName } : cat
-        )
-      );
-      alert("แก้ไขข้อมูลสำเร็จ!");
-    } else {
-      // เพิ่มหมวดหมู่ใหม่
-      const newCategory = {
-        id: categories.length + 1,
-        name: categoryName,
-        createdAt: new Date().toISOString().slice(0, 16).replace("T", " "),
-      };
-      setCategories([...categories, newCategory]);
-      alert("เพิ่มข้อมูลสำเร็จ!");
-    }
-    setCategoryName("");
-    setEditingCategory(null);
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
   };
 
-  const handleDelete = (id) => {
-    if (window.confirm("คุณต้องการลบข้อมูลนี้ใช่หรือไม่?")) {
-      setCategories(categories.filter((cat) => cat.id !== id));
-      alert("ลบข้อมูลสำเร็จ!");
+  const loadCategories = async () => {
+    try {
+      const data = await fetchs(page, pageSize);
+      setCategories(data);
+      setTotalPages(data.pagination.totalPages);
+    } catch (error) {
+      await Swal.fire({
+        icon: "error",
+        title: "เกิดข้อผิดพลาด",
+        text: error.message,
+      });
     }
   };
+
+  useEffect(() => {
+    loadCategories();
+  }, [page, pageSize]);
 
   return (
     <div className="p-4">
@@ -100,21 +159,24 @@ const CategoriesAdmin = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {categories.map((category, index) => (
+            {categories?.data?.map((category, index) => (
               <tr key={category.id}>
                 <td className="px-6 py-4 text-base text-gray-700">
-                  {index + 1}
+                  {(page - 1) * pageSize + index + 1}
                 </td>
                 <td className="px-6 py-4 text-base text-gray-700">
                   {category.name}
                 </td>
                 <td className="px-6 py-4 text-base text-gray-700">
-                  {category.createdAt}
+                  {formatDate(category?.createdAt)}
                 </td>
                 <td className="px-6 py-4 text-base text-gray-700 flex gap-2">
                   <button
                     className="btn-edit text-white bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-md"
-                    onClick={() => handleEdit(category)}
+                    onClick={() => {
+                      setEditingCategory(category);
+                      setCategoryName(category.name);
+                    }}
                   >
                     แก้ไขข้อมูล
                   </button>
@@ -130,6 +192,11 @@ const CategoriesAdmin = () => {
           </tbody>
         </table>
       </div>
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };

@@ -17,6 +17,7 @@ import BlogAdminEdit from "./pages/admin/BlogAdminEdit";
 import UserAdminInsert from "./pages/admin/UserAdminInsert";
 import UserAdminEdit from "./pages/admin/UserAdminEdit";
 import CategoriesAdmin from "./pages/admin/CategoriesAdmin";
+import DashAdmin from "./pages/admin/DashAdmin";
 
 const App = () => {
   return (
@@ -34,6 +35,7 @@ const App = () => {
           <Route path="register" element={<Registraion />} />
         </Route>
         <Route path="/admin" element={<Admin />}>
+          <Route path="dashboard" element={<DashAdmin />} />
           <Route path="blogs" element={<BlogAdmin />} />
           <Route path="blogs/insert" element={<BlogAdminInsert />} />
           <Route path="blog/:id" element={<BlogAdminEdit />} />

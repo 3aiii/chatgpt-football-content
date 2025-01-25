@@ -51,7 +51,7 @@ const Login = () => {
             timer: 1000,
             timerProgressBar: true,
           }).then(() => {
-            navigate("/admin/users");
+            navigate("/admin/dashboard");
           });
         } else {
           Swal.fire({
@@ -73,9 +73,10 @@ const Login = () => {
         });
       }
     } catch (error) {
+      console.log(error);
       Swal.fire({
         title: "เกิดข้อผิดพลาด!",
-        text: error.message,
+        text: error.response.data.message,
         icon: "error",
         confirmButtonText: "ตกลง",
       });

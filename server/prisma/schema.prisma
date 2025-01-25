@@ -20,7 +20,7 @@ model User {
   fname     String
   lname     String
   email     String     @unique
-  tel       String     
+  tel       String
   role      String     @default("USER")
   createdAt DateTime   @default(now())
   updateAt  DateTime   @updatedAt
@@ -53,8 +53,9 @@ model Blog {
 }
 
 model Category {
-  id       Int      @id @default(autoincrement())
-  name     String
-  updateAt DateTime @updatedAt
-  blogs    Blog[]
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
+  blogs     Blog[]
 }
