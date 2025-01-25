@@ -1,9 +1,35 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
+import { fetchs } from "./../../composables/useUser";
+import { formatDate } from "./../../utils/formatDate";
+import Pagination from "../../components/admin/Pagination";
 
 const UserAdmin = () => {
+  const [users, setUser] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(8);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const fetchData = async () => {
+    const data = await fetchs(searchTerm, page, pageSize);
+    if (data.message === "Not found this record") {
+      return setUser([]);
+    }
+    setUser(data.data);
+    setTotalPages(data.pagination.totalPages);
+  };
+
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [searchTerm, page, pageSize]);
+
   return (
     <div className="p-4">
       {/* Header Section */}
@@ -16,6 +42,8 @@ const UserAdmin = () => {
               className="bg-transparent outline-none px-2 "
               type="text"
               placeholder="คำค้นหา"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
         </div>
@@ -44,22 +72,67 @@ const UserAdmin = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            <tr>
-              <td className="px-6 py-4 text-base text-gray-700">1</td>
-              <td className="px-6 py-4 text-base text-gray-700">R1C2</td>
-              <td className="px-6 py-4 text-base text-gray-700">R1C3</td>
-              <td className="px-6 py-4 text-base text-gray-700">R1C3</td>
-              <td className="px-6 py-4 text-base text-gray-700">R1C1</td>
-              <td className="px-6 py-4 text-base text-gray-700">R1C2</td>
-              <td className="px-6 py-4 text-base text-gray-700 flex gap-2">
-                <Link to={"/admin/user/1"} className="btn-edit">
-                  แก้ไขข้อมูล
-                </Link>
-                <button className="btn-danger">ลบข้อมูล</button>
-              </td>
-            </tr>
+            {users.length === 0 ? (
+              <tr>
+                <td
+                  colSpan="7"
+                  className="px-6 py-4 text-base text-gray-700 text-center"
+                >
+                  <div>
+                    <p className="text-lg font-semibold">
+                      ไม่มีผู้ใช้งานในระบบ
+                    </p>
+                    <p className="text-gray-500">
+                      คุณสามารถลองค้นหาใหม่โดยใช้คำค้นหาอื่น
+                      หรือเพิ่มผู้ใช้งานใหม่ได้โดยคลิกที่ปุ่ม{" "}
+                      <span className="text-purple-500 font-medium">
+                        "สร้างผู้ใช้งาน"
+                      </span>{" "}
+                      ด้านบน
+                    </p>
+                  </div>
+                </td>
+              </tr>
+            ) : (
+              users.map((user, index) => (
+                <tr key={user.id}>
+                  <td className="px-6 py-4 text-base text-gray-700">
+                    {(page - 1) * pageSize + index + 1}
+                  </td>
+                  <td className="px-6 py-4 text-base text-gray-700">
+                    {user.username}
+                  </td>
+                  <td className="px-6 py-4 text-base text-gray-700">
+                    {user.email}
+                  </td>
+                  <td className="px-6 py-4 text-base text-gray-700">
+                    {user.tel}
+                  </td>
+                  <td className="px-6 py-4 text-base text-gray-700">
+                    {formatDate(user.createdAt)}
+                  </td>
+                  <td className="px-6 py-4 text-base text-gray-700">
+                    {user.role}
+                  </td>
+                  <td className="px-6 py-4 text-base text-gray-700 flex gap-2">
+                    <Link to={`/admin/user/${user.id}`} className="btn-edit">
+                      แก้ไขข้อมูล
+                    </Link>
+                    <button className="btn-danger">ลบข้อมูล</button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
+      </div>
+
+      <div className="container mx-auto p-4">
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
       </div>
     </div>
   );

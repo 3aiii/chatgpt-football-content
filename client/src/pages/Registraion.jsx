@@ -1,10 +1,89 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { register } from "../composables/useUser";
+import Swal from "sweetalert2";
 
 const Registraion = () => {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+    fname: "",
+    lname: "",
+    email: "",
+    tel: "",
+    role: "USER",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    for (const [key, value] of Object.entries(formData)) {
+      if (!value.trim()) {
+        Swal.fire({
+          title: "ข้อผิดพลาด!",
+          text: `กรุณากรอก ${key} ให้ครบถ้วน`,
+          icon: "warning",
+          confirmButtonText: "ตกลง",
+        });
+        return;
+      }
+    }
+
+    // ตรวจสอบรูปแบบของอีเมล
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      Swal.fire({
+        title: "ข้อผิดพลาด!",
+        text: "กรุณากรอกอีเมลให้ถูกต้อง",
+        icon: "warning",
+        confirmButtonText: "ตกลง",
+      });
+      return;
+    }
+    try {
+      const response = await register(
+        formData.username,
+        formData.password,
+        formData.fname,
+        formData.lname,
+        formData.tel,
+        formData.email,
+        formData.role
+      );
+
+      if (response.success) {
+        Swal.fire({
+          title: "สำเร็จ!",
+          text: "สมัครสมาชิกสำเร็จ!",
+          icon: "success",
+          timer: 1000,
+          timerProgressBar: true,
+        }).then(() => {
+          navigate("/login");
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "เกิดข้อผิดพลาด!",
+        text: error.message,
+        icon: "error",
+        confirmButtonText: "ลองใหม่",
+      });
+    }
+  };
+
   return (
     <>
-      <div className="w-[50%] border-gray-300 rounded-tl-lg rounded-bl-lg  p-8 pb-12 flex flex-col justify-between bg-gradient-to-b from-[#f5faff] to-[#e9f3fc]">
+      <div className="w-[50%] border-gray-300 rounded-tl-lg rounded-bl-lg p-8 pb-12 flex flex-col justify-between bg-gradient-to-b from-[#f5faff] to-[#e9f3fc]">
         <div>
           <h1 className="text-4xl font-bold text-center text-[#0d4fa4]">
             สมัครสมาชิก
@@ -42,8 +121,11 @@ const Registraion = () => {
             </label>
             <input
               type="text"
+              name="username"
               placeholder="ชื่อผู้ใช้งาน"
-              className="input-field "
+              className="input-field"
+              value={formData.username}
+              onChange={handleChange}
             />
           </div>
           <div className="container-input w-full">
@@ -52,8 +134,11 @@ const Registraion = () => {
             </label>
             <input
               type="password"
+              name="password"
               placeholder="รหัสผ่าน"
               className="input-field w-full"
+              value={formData.password}
+              onChange={handleChange}
             />
           </div>
         </div>
@@ -62,30 +147,66 @@ const Registraion = () => {
             <label>
               ชื่อ <span className="text-red-500">*</span>
             </label>
-            <input type="text" placeholder="ชื่อ" className="input-field" />
+            <input
+              type="text"
+              name="fname"
+              placeholder="ชื่อ"
+              className="input-field"
+              value={formData.fname}
+              onChange={handleChange}
+            />
           </div>
           <div className="container-input w-full">
             <label>
               นามสกุล <span className="text-red-500">*</span>
             </label>
-            <input type="text" placeholder="นามสกุล" className="input-field" />
+            <input
+              type="text"
+              name="lname"
+              placeholder="นามสกุล"
+              className="input-field"
+              value={formData.lname}
+              onChange={handleChange}
+            />
           </div>
         </div>
         <div className="container-input w-full mt-4">
           <label>
             อีเมล์ <span className="text-red-500">*</span>
           </label>
-          <input type="text" placeholder="อีเมล์" className="input-field" />
+          <input
+            type="email"
+            name="email"
+            placeholder="อีเมล์"
+            className="input-field"
+            value={formData.email}
+            onChange={handleChange}
+          />
         </div>
         <div className="container-input w-full mt-4">
           <label>
             เบอร์โทร <span className="text-red-500">*</span>
           </label>
-          <input type="text" placeholder="เบอร์โทร" className="input-field" />
+          <input
+            type="text"
+            name="tel"
+            placeholder="เบอร์โทร"
+            className="input-field"
+            value={formData.tel}
+            onChange={handleChange}
+          />
         </div>
         <div className="flex justify-end gap-2 mt-4">
-          <button className="btn-cancel text-md">ยกเลิก</button>
-          <button className="btn-success text-md">สมัครสมาชิก</button>
+          <button type="button" className="btn-cancel text-md">
+            ยกเลิก
+          </button>
+          <button
+            type="submit"
+            className="btn-success text-md"
+            onClick={handleSubmit}
+          >
+            สมัครสมาชิก
+          </button>
         </div>
       </div>
     </>

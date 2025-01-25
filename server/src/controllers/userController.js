@@ -38,6 +38,7 @@ module.exports = {
           fname: user.fname,
           lname: user.lname,
           email: user.email,
+          role: user.role,
           tel: user.tel,
         },
         process.env.JWT_SECRET,
@@ -57,6 +58,7 @@ module.exports = {
         success: true,
         message: "Login success!",
         token,
+        role: user.role,
       });
     } catch (error) {
       return res.status(500).send({
@@ -103,6 +105,7 @@ module.exports = {
   },
   create: async (req, res) => {
     const { username, password, fname, lname, email, tel, role } = req.body;
+
     try {
       const existingUsername = await prisma.user.findUnique({
         where: {
@@ -178,6 +181,7 @@ module.exports = {
             fname: true,
             lname: true,
             createdAt: true,
+            role: true,
           },
         });
 
@@ -207,6 +211,7 @@ module.exports = {
             fname: true,
             lname: true,
             createdAt: true,
+            role: true,
           },
         });
 
@@ -214,7 +219,7 @@ module.exports = {
       }
 
       if (users.length === 0) {
-        return res.status(404).send({
+        return res.send({
           succes: false,
           message: "Not found this record",
         });
@@ -276,7 +281,6 @@ module.exports = {
   update: async (req, res) => {
     const { userId } = req.params;
     const { username, password, fname, lname, email, tel, role } = req.body;
-
     try {
       const existingUser = await prisma.user.findUnique({
         where: { id: parseInt(userId) },
@@ -302,7 +306,7 @@ module.exports = {
         tel: tel,
       };
 
-      if (req.user.role === "ADMIN") {
+      if (req.body.role === "ADMIN") {
         updateData.role = role;
       }
 

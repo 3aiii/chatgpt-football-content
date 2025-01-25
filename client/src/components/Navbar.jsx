@@ -1,9 +1,76 @@
-import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
+import Swal from "sweetalert2";
+import { fetch, logout } from "../composables/useUser";
 
 const Navbar = () => {
   const location = useLocation();
-  const isLogin = true;
+  const navigate = useNavigate();
+  const token = Cookies.get("token");
+  const [data, setData] = useState([]);
+
+  const handleLogout = async () => {
+    // Decode token เพื่อใช้ข้อมูล
+    const decoded = jwtDecode(token);
+
+    Swal.fire({
+      title: "ยืนยันการออกจากระบบ",
+      text: "คุณแน่ใจหรือว่าต้องการออกจากระบบ?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "ใช่, ออกจากระบบ",
+      cancelButtonText: "ยกเลิก",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await logout(decoded?.userId);
+
+          if (response.success) {
+            Swal.fire({
+              title: "สำเร็จ!",
+              text: "ออกจากระบบสำเร็จ!",
+              icon: "success",
+              timer: 1000,
+              timerProgressBar: true,
+            }).then(() => {
+              Cookies.remove("token");
+              navigate("/login");
+            });
+          } else {
+            Swal.fire({
+              title: "ข้อผิดพลาด!",
+              text: response.message || "ไม่สามารถออกจากระบบได้",
+              icon: "error",
+              confirmButtonText: "ตกลง",
+            });
+          }
+        } catch (error) {
+          Swal.fire({
+            title: "เกิดข้อผิดพลาด!",
+            text: error.message || "เกิดข้อผิดพลาดบางอย่าง กรุณาลองใหม่",
+            icon: "error",
+            confirmButtonText: "ลองใหม่",
+          });
+        }
+      }
+    });
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (token) {
+        const decoded = jwtDecode(token);
+        const response = await fetch(decoded?.userId);
+        setData(response);
+      } else {
+        setData([]);
+      }
+    };
+
+    fetchData();
+  }, [token]);
 
   return (
     <div className="flex flex-col">
@@ -50,20 +117,27 @@ const Navbar = () => {
         </div>
         <div className="flex">
           <div className="mr-4 border-r-2 rounded-md"></div>
-          {isLogin ? (
+          {token ? (
             <div className="flex gap-4">
               <div className="flex items-center text-white text-lg font-bold">
-                Sirapat Wongphatsawek
+                {data?.data?.fname} {data?.data?.lname}
               </div>
               <Link to={"/edit/1"} className="btn-primary font-bold">
                 ดูข้อมูล
               </Link>
-              <button className="btn-primary font-bold">ออกจากระบบ</button>
+              <button className="btn-primary font-bold" onClick={handleLogout}>
+                ออกจากระบบ
+              </button>
             </div>
           ) : (
-            <Link to={"/register"} className="btn-primary font-bold">
-              สมัครสมาชิก
-            </Link>
+            <div className="flex gap-2">
+              <Link to={"/login"} className="btn-primary font-bold">
+                เข้าสู่ระบบ
+              </Link>
+              <Link to={"/register"} className="btn-primary font-bold">
+                สมัครสมาชิก
+              </Link>
+            </div>
           )}
         </div>
       </div>
