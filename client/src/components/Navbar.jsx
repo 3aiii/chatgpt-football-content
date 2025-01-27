@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, matchPath, useLocation, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
@@ -93,7 +93,11 @@ const Navbar = () => {
             <li>
               <Link
                 className={`hover:border-b-2 transition ${
-                  location.pathname === "/blogs" ? `border-b-2` : ``
+                  location.pathname === "/blogs" ||
+                  matchPath("/blog/:id", location.pathname) ||
+                  matchPath("/category/:name", location.pathname)
+                    ? `border-b-2`
+                    : ``
                 }`}
                 to={"/blogs"}
               >

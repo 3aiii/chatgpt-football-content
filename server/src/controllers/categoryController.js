@@ -36,33 +36,46 @@ module.exports = {
     }
   },
   gets: async (req, res) => {
-    const { page = 1, pageSize = 1 } = req.query;
-    const pageNumber = parseInt(page);
-    const pageSizeNumber = parseInt(pageSize);
-    const skip = (pageNumber - 1) * pageSizeNumber;
+    const { page, pageSize } = req.query; // รับค่าจาก query
+    const pageNumber = page ? parseInt(page) : null; // ถ้าไม่มีค่า ให้เป็น null
+    const pageSizeNumber = pageSize ? parseInt(pageSize) : null;
+    const skip =
+      pageNumber && pageSizeNumber ? (pageNumber - 1) * pageSizeNumber : 0;
 
     try {
       let categories;
       let totalCategories;
 
-      categories = await prisma.category.findMany({
-        orderBy: {
-          createdAt: "desc",
-        },
-        skip: skip,
-        take: pageSizeNumber,
-      });
-
+      // ดึงจำนวนทั้งหมด
       totalCategories = await prisma.category.count();
+
+      // ถ้าไม่มี page และ pageSize ดึงข้อมูลทั้งหมด
+      if (!pageNumber || !pageSizeNumber) {
+        categories = await prisma.category.findMany({
+          orderBy: {
+            createdAt: "desc",
+          },
+        });
+      } else {
+        categories = await prisma.category.findMany({
+          orderBy: {
+            createdAt: "desc",
+          },
+          skip: skip,
+          take: pageSizeNumber,
+        });
+      }
 
       if (categories.length === 0) {
         return res.send({
-          succes: false,
+          success: false,
           message: "Not found this record",
         });
       }
 
-      const totalPages = Math.ceil(totalCategories / pageSizeNumber);
+      const totalPages = pageSizeNumber
+        ? Math.ceil(totalCategories / pageSizeNumber)
+        : 1;
 
       return res.status(200).send({
         success: true,
@@ -70,7 +83,7 @@ module.exports = {
         pagination: {
           totalCategories,
           totalPages,
-          currentPage: pageNumber,
+          currentPage: pageNumber || 1,
         },
       });
     } catch (error) {
@@ -81,23 +94,36 @@ module.exports = {
     }
   },
   get: async (req, res) => {
-    const { cateId } = req.params;
+    const { cateName } = req.params;
 
     try {
-      const data = await prisma.category.findUnique({
-        where: { id: parseInt(cateId) },
+      let findCate = await prisma.category.findUnique({
+        where: { name: cateName },
       });
 
-      if (!data) {
+      if (!findCate) {
         return res.send({
           success: false,
-          message: "Not found user",
+          message: "Not found Category",
         });
       }
 
+      const blogs = await prisma.blog.findMany({
+        where: {
+          categoryId: findCate.id,
+          status: "ACTIVE"
+        },
+        include: {
+          Category: true,
+        },
+      });
+
       return res.status(200).send({
         success: true,
-        data,
+        data: {
+          findCate,
+          blogs,
+        },
       });
     } catch (error) {
       return res.status(500).send({

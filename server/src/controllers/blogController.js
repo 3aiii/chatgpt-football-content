@@ -16,20 +16,19 @@ module.exports = {
       });
 
       return res.status(201).send({
-        succes: true,
+        success: true,
         message: "Created blog already!",
         data: blog.id,
       });
     } catch (error) {
       return res.status(500).send({
-        succes: false,
+        success: false,
         message: error.message,
       });
     }
   },
   gets: async (req, res) => {
-    const { search, page = 1, pageSize = 10 } = req.query;
-
+    const { search, page = 1, pageSize = 100 } = req.query;
     const pageNumber = parseInt(page);
     const pageSizeNumber = parseInt(pageSize);
     const skip = (pageNumber - 1) * pageSizeNumber;
@@ -48,6 +47,7 @@ module.exports = {
                 },
               },
             ],
+            status: "ACTIVE",
           },
           select: {
             id: true,
@@ -55,6 +55,7 @@ module.exports = {
             content: true,
             image: true,
             createdAt: true,
+            status: true,
             Category: {
               select: {
                 name: true,
@@ -92,6 +93,10 @@ module.exports = {
         });
       } else {
         blogs = await prisma.blog.findMany({
+          where: {
+            status: "ACTIVE",
+          },
+
           select: {
             id: true,
             name: true,
@@ -99,6 +104,7 @@ module.exports = {
             image: true,
             createdAt: true,
             Category: true,
+            status: true,
             user: {
               select: {
                 id: true,
@@ -118,11 +124,15 @@ module.exports = {
           take: pageSizeNumber,
         });
 
-        totalBlogs = await prisma.blog.count();
+        totalBlogs = await prisma.blog.count({
+          where: {
+            status: "ACTIVE",
+          },
+        });
       }
 
       if (blogs.length === 0) {
-        return res.status(404).send({
+        return res.send({
           success: false,
           message: "Not found this record",
         });
@@ -152,7 +162,10 @@ module.exports = {
 
     try {
       const data = await prisma.blog.findUnique({
-        where: { id: parseInt(blogId) },
+        where: { id: blogId },
+        include: {
+          Category: true,
+        },
       });
 
       if (!data) {
@@ -203,20 +216,19 @@ module.exports = {
       });
 
       return res.status(200).send({
-        succes: true,
+        success: true,
         message: "Deleted post already!",
       });
     } catch (error) {
       return res.status(500).send({
-        succes: false,
+        success: false,
         message: error.message,
       });
     }
   },
   update: async (req, res) => {
-    const { name, content, categoryId } = req.body;
+    const { name, content, cateId } = req.body;
     const { blogId } = req.params;
-
     try {
       await prisma.blog.update({
         where: {
@@ -225,17 +237,17 @@ module.exports = {
         data: {
           name,
           content,
-          categoryId,
+          categoryId: parseInt(cateId),
         },
       });
 
       return res.status(200).send({
-        succes: true,
+        success: true,
         message: "Updated succesfully!",
       });
     } catch (error) {
-      return res.staus(500).send({
-        succes: false,
+      return res.status(500).send({
+        success: false,
         message: error.message,
       });
     }
@@ -243,7 +255,6 @@ module.exports = {
   uploadImg: async (req, res) => {
     const { blogId } = req.params;
     const { file } = req;
-
     try {
       await prisma.blog.update({
         where: { id: blogId },
@@ -257,6 +268,7 @@ module.exports = {
         message: "Upload image successfully!",
       });
     } catch (error) {
+      console.log(error);
       return res.status(500).send({
         success: false,
         message: error.message,

@@ -23,8 +23,8 @@ export const fetchs = async (page, pageSize) => {
 
   return response.data;
 };
-export const fetch = async (cateId) => {
-  const response = await get(`category/${cateId}`);
+export const fetch = async (cateName) => {
+  const response = await get(`category/${cateName}`);
 
   return response.data;
 };

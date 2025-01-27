@@ -18,6 +18,7 @@ import UserAdminInsert from "./pages/admin/UserAdminInsert";
 import UserAdminEdit from "./pages/admin/UserAdminEdit";
 import CategoriesAdmin from "./pages/admin/CategoriesAdmin";
 import DashAdmin from "./pages/admin/DashAdmin";
+import Category from "./pages/user/Category";
 
 const App = () => {
   return (
@@ -29,6 +30,7 @@ const App = () => {
           <Route path="/blog/:id" element={<Blog />} />
           <Route path="/edit/:id" element={<Edit />} />
           <Route path="/system" element={<System />} />
+          <Route path="/category/:name" element={<Category />} />
         </Route>
         <Route path="/" element={<Auth />}>
           <Route path="login" element={<Login />} />

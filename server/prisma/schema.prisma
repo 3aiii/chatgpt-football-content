@@ -41,7 +41,7 @@ model User_log {
 model Blog {
   id         String    @id @default(uuid())
   name       String
-  content    String?
+  content    String?   @db.LongText
   image      String?
   status     String    @default("ACTIVE")
   createdAt  DateTime  @default(now())

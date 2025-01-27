@@ -3,7 +3,7 @@ const multer = require("multer");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     if (req.params.blogId) {
-      cb(null, "uploads");
+      cb(null, "src/uploads");
     } else {
       cb(new Error("Invalid URL parameter. Upload path not found."), null);
     }

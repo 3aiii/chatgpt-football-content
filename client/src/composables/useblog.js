@@ -11,28 +11,47 @@ const get = async (endpoint, params = {}) => {
   });
 };
 
-export const create = async (name) => {
-  const response = await axios.post(`${HOST_URL}/blog/create`, name);
+export const create = async (data) => {
+  const response = await axios.post(`${HOST_URL}/blog/create`, data);
 
   return response.data;
 };
-export const fetchs = async (page, pageSize) => {
-  const response = await get(`blog/gets`, { page, pageSize });
+
+export const uploadImg = async (userId, file) => {
+  console.log(file);
+  const formData = new FormData();
+  formData.append("upload", file);
+
+  const response = await axios.post(
+    `${HOST_URL}/blog/uploadImage/${userId}`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
 
   return response.data;
 };
-export const fetch = async (cateId) => {
-  const response = await get(`blog/${cateId}`);
+
+export const fetchs = async (search, page, pageSize) => {
+  const response = await get(`blog/gets`, { search, page, pageSize });
 
   return response.data;
 };
-export const update = async (name, cateId) => {
-  const response = await axios.put(`${HOST_URL}/blog/${cateId}`, name);
+export const fetch = async (blogId) => {
+  const response = await get(`blog/${blogId}`);
 
   return response.data;
 };
-export const remove = async (cateId) => {
-  const response = await axios.delete(`${HOST_URL}/blog/${cateId}`);
+export const update = async (data, blogId) => {
+  const response = await axios.put(`${HOST_URL}/blog/${blogId}`, data);
+
+  return response.data;
+};
+export const remove = async (blogId) => {
+  const response = await axios.delete(`${HOST_URL}/blog/${blogId}`);
 
   return response.data;
 };

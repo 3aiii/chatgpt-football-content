@@ -86,7 +86,9 @@ const DashAdmin = () => {
 
       {/* User Log Table */}
       <div className="bg-white shadow-md rounded-lg p-4">
-        <h2 className="text-xl font-semibold mb-4">User Logs</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          การเข้า-ออกระบบของผู้ใช้งาน
+        </h2>
         <div className="overflow-x-auto">
           <table className="min-w-full table-auto border-collapse border border-gray-200">
             <thead className="bg-gray-100">

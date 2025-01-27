@@ -8,6 +8,7 @@ import Categories from "../components/Categories";
 const Index = () => {
   const location = useLocation();
   const isEditPage = matchPath("/edit/:id", location.pathname);
+  const isCatePage = matchPath("/category/:name", location.pathname);
 
   return (
     <div className="flex flex-col items-center">
@@ -20,7 +21,7 @@ const Index = () => {
       <div className="w-full">
         <Outlet />
       </div>
-      {isEditPage ? (
+      {isEditPage || isCatePage ? (
         <></>
       ) : (
         <div className="w-full bg-[#37003c] text-white mt-6">
