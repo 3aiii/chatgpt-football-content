@@ -48,15 +48,21 @@ export const logout = async (userId) => {
   return response.data;
 };
 export const update = async (userId, data) => {
-  const response = await axios.put(`${HOST_URL}/user/${userId}`, {
-    username: data?.username,
-    password: data?.password,
-    fname: data?.fname,
-    lname: data?.lname,
-    tel: data?.tel,
-    email: data?.email,
-    role: data?.role,
-  });
+  const response = await axios.put(
+    `${HOST_URL}/user/${userId}`,
+    {
+      username: data?.username,
+      password: data?.password,
+      fname: data?.fname,
+      lname: data?.lname,
+      tel: data?.tel,
+      email: data?.email,
+      role: data?.role,
+    },
+    {
+      withCredentials: true,
+    }
+  );
 
   return response.data;
 };
@@ -71,7 +77,9 @@ export const fetchs = async (search, page, pageSize) => {
   return response.data;
 };
 export const remove = async (userId) => {
-  const response = await axios.delete(`${HOST_URL}/user/${userId}`);
+  const response = await axios.delete(`${HOST_URL}/user/${userId}`, {
+    withCredentials: true,
+  });
 
   return response.data;
 };

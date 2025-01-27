@@ -12,7 +12,6 @@ module.exports.verifyUser = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
     if (decoded.role === "USER" || decoded.role === "ADMIN") {
       req.user = decoded;
       return next();

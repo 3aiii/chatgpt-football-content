@@ -36,7 +36,7 @@ const BlogAdminInsert = () => {
         const isValidType = filetypes.test(imageFile.type); // Validate MIME type
         const isValidExtension = filetypes.test(
           imageFile.name.split(".").pop().toLowerCase()
-        ); // Validate extension
+        );
 
         if (!isValidType || !isValidExtension) {
           return Swal.fire({

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login } from "../composables/useUser";
 import Swal from "sweetalert2";
@@ -26,6 +26,26 @@ const Login = () => {
       Swal.fire({
         title: "ข้อผิดพลาด!",
         text: "กรุณากรอกชื่อผู้ใช้งานและรหัสผ่านให้ครบถ้วน",
+        icon: "warning",
+        confirmButtonText: "ตกลง",
+      });
+      return;
+    }
+
+    const regex = /^[A-Za-z0-9_]+$/;
+    if (!regex.test(formData.username)) {
+      Swal.fire({
+        title: "ข้อผิดพลาด!",
+        text: "ชื่อผู้ใช้งานต้องเป็นภาษาอังกฤษเท่านั้น",
+        icon: "warning",
+        confirmButtonText: "ตกลง",
+      });
+      return;
+    }
+    if (!regex.test(formData.password)) {
+      Swal.fire({
+        title: "ข้อผิดพลาด!",
+        text: "รหัสผ่านต้องเป็นภาษาอังกฤษเท่านั้น",
         icon: "warning",
         confirmButtonText: "ตกลง",
       });
@@ -73,15 +93,23 @@ const Login = () => {
         });
       }
     } catch (error) {
-      console.log(error);
       Swal.fire({
         title: "เกิดข้อผิดพลาด!",
-        text: error.response.data.message,
+        text:
+          error.response?.data?.message || "ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้",
         icon: "error",
         confirmButtonText: "ตกลง",
       });
     }
   };
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+
+    if (token) {
+      navigate("/");
+    }
+  });
 
   return (
     <>

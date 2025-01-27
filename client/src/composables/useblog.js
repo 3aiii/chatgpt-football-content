@@ -12,13 +12,14 @@ const get = async (endpoint, params = {}) => {
 };
 
 export const create = async (data) => {
-  const response = await axios.post(`${HOST_URL}/blog/create`, data);
+  const response = await axios.post(`${HOST_URL}/blog/create`, data, {
+    withCredentials: true,
+  });
 
   return response.data;
 };
 
 export const uploadImg = async (userId, file) => {
-  console.log(file);
   const formData = new FormData();
   formData.append("upload", file);
 
@@ -29,6 +30,7 @@ export const uploadImg = async (userId, file) => {
       headers: {
         "Content-Type": "multipart/form-data",
       },
+      withCredentials: true,
     }
   );
 
@@ -46,12 +48,16 @@ export const fetch = async (blogId) => {
   return response.data;
 };
 export const update = async (data, blogId) => {
-  const response = await axios.put(`${HOST_URL}/blog/${blogId}`, data);
+  const response = await axios.put(`${HOST_URL}/blog/${blogId}`, data, {
+    withCredentials: true,
+  });
 
   return response.data;
 };
 export const remove = async (blogId) => {
-  const response = await axios.delete(`${HOST_URL}/blog/${blogId}`);
+  const response = await axios.delete(`${HOST_URL}/blog/${blogId}`, {
+    withCredentials: true,
+  });
 
   return response.data;
 };

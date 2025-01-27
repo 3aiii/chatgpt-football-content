@@ -58,24 +58,78 @@ const UserAdminInsert = () => {
         });
       }
     } catch (error) {
-      Swal.fire({
-        title: "เกิดข้อผิดพลาด",
-        text: error.message || "ไม่สามารถเพิ่มผู้ใช้งานได้",
-        icon: "error",
-        confirmButtonText: "ตกลง",
-      });
+      if (error.response.data.message === "This email is already taken") {
+        Swal.fire({
+          title: "เกิดข้อผิดพลาด",
+          text: "ไม่สามารถเพิ่มผู้ใช้งานได้เนื่องจากมีการใช้ email นี้ไปแล้ว",
+          icon: "warning",
+          confirmButtonText: "ตกลง",
+        });
+      } else if (error.response.data.message === "username is already exist") {
+        Swal.fire({
+          title: "เกิดข้อผิดพลาด",
+          text: "ไม่สามารถเพิ่มผู้ใช้งานได้เนื่องจากมีการใช้ username นี้ไปแล้ว",
+          icon: "warning",
+          confirmButtonText: "ตกลง",
+        });
+      } else {
+        Swal.fire({
+          title: "เกิดข้อผิดพลาด",
+          text: error.message || "ไม่สามารถเพิ่มผู้ใช้งานได้",
+          icon: "error",
+          confirmButtonText: "ตกลง",
+        });
+      }
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // ตรวจสอบว่ากรอกครบหรือยัง
     const { username, password, fname, lname, tel, email, role } = formData;
+
     if (!username || !password || !fname || !lname || !tel || !email || !role) {
       Swal.fire({
         title: "ข้อผิดพลาด!",
         text: "กรุณากรอกข้อมูลให้ครบถ้วน",
+        icon: "warning",
+        confirmButtonText: "ตกลง",
+      });
+      return;
+    }
+
+    const englishOnlyRegex = /^[A-Za-z]+$/;
+    if (
+      !englishOnlyRegex.test(username) ||
+      !englishOnlyRegex.test(password) ||
+      !englishOnlyRegex.test(fname) ||
+      !englishOnlyRegex.test(lname)
+    ) {
+      Swal.fire({
+        title: "ข้อผิดพลาด!",
+        text: "กรุณากรอกชื่อผู้ใช้, รหัสผ่าน, ชื่อ และนามสกุลเป็นภาษาอังกฤษเท่านั้น",
+        icon: "warning",
+        confirmButtonText: "ตกลง",
+      });
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      Swal.fire({
+        title: "ข้อผิดพลาด!",
+        text: "กรุณากรอกอีเมลให้ถูกต้อง",
+        icon: "warning",
+        confirmButtonText: "ตกลง",
+      });
+      return;
+    }
+
+    const telRegex = /^\d{10}$/;
+    if (!telRegex.test(tel)) {
+      Swal.fire({
+        title: "ข้อผิดพลาด!",
+        text: "กรุณากรอกเบอร์โทรให้ถูกต้อง (ตัวเลข 10 หลักเท่านั้น)",
         icon: "warning",
         confirmButtonText: "ตกลง",
       });

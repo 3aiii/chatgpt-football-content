@@ -1,5 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const jwt = require("jsonwebtoken");
 
 module.exports = {
   create: async (req, res) => {
@@ -33,6 +34,20 @@ module.exports = {
     const pageSizeNumber = parseInt(pageSize);
     const skip = (pageNumber - 1) * pageSizeNumber;
 
+    let dynamicStatus = {
+      OR: [{ status: "ACTIVE" }],
+    };
+
+    if (req.cookies.token) {
+      const decoded = jwt.verify(req.cookies.token, process.env.JWT_SECRET);
+
+      if (decoded?.role === "ADMIN") {
+        dynamicStatus = {
+          OR: [{ status: "ACTIVE" }, { status: "HIDDEN" }],
+        };
+      }
+    }
+
     try {
       let blogs;
       let totalBlogs;
@@ -45,9 +60,9 @@ module.exports = {
                 name: {
                   contains: search,
                 },
+                ...(dynamicStatus && dynamicStatus),
               },
             ],
-            status: "ACTIVE",
           },
           select: {
             id: true,
@@ -94,7 +109,7 @@ module.exports = {
       } else {
         blogs = await prisma.blog.findMany({
           where: {
-            status: "ACTIVE",
+            ...(dynamicStatus && dynamicStatus),
           },
 
           select: {
@@ -126,7 +141,7 @@ module.exports = {
 
         totalBlogs = await prisma.blog.count({
           where: {
-            status: "ACTIVE",
+            ...(dynamicStatus && dynamicStatus),
           },
         });
       }
@@ -193,6 +208,8 @@ module.exports = {
     const { blogId } = req.params;
 
     try {
+      let dynamicStatus;
+
       const blog = await prisma.blog.findUnique({
         where: {
           id: blogId,
@@ -206,12 +223,22 @@ module.exports = {
         });
       }
 
+      if (blog.status === "HIDDEN") {
+        dynamicStatus = {
+          status: "ACTIVE",
+        };
+      } else {
+        dynamicStatus = {
+          status: "HIDDEN",
+        };
+      }
+
       await prisma.blog.update({
         where: {
           id: blogId,
         },
         data: {
-          status: "HIDDEN",
+          ...(dynamicStatus && dynamicStatus),
         },
       });
 

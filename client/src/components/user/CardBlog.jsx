@@ -23,7 +23,9 @@ const CardBlog = ({ blog }) => {
         <h2 className="font-bold text-lg line-clamp-2 break-words">
           {blog?.name}
         </h2>
-        <p className="line-clamp-2 text-sm font-light">{blog?.content}</p>
+        <p className="line-clamp-2 text-sm font-light break-words">
+          {blog?.content}
+        </p>
       </div>
       <div className="flex justify-between items-center mt-2">
         <div className="flex items-center gap-2">

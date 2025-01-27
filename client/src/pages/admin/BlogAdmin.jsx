@@ -112,16 +112,15 @@ const BlogAdmin = () => {
       {/* Table Section */}
       <div className="overflow-x-auto bg-white shadow-md rounded-lg">
         <table className="min-w-full table-auto border-collapse">
-          <thead className=" bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
+          <thead className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white">
             <tr>
               <th className="col-field">#</th>
-              <th className="col-field w-[15%]">หัวข้อ</th>
-              <th className="col-field">เนื้อหาข้างต้น</th>
+              <th className="col-field">หัวข้อ</th>
               <th className="col-field">หมวดหมู่</th>
               <th className="col-field">ผู้สร้าง</th>
               <th className="col-field w-[10%]">วันเวลาที่สร้าง</th>
               <th className="col-field">สถานะ</th>
-              <th className="px-6 py-3 w-[20%]"></th>
+              <th className="w-[15%] lg:w-[20%] xl:w-[25%]"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
@@ -151,9 +150,8 @@ const BlogAdmin = () => {
                     <td className="px-6 py-1 text-gray-700">
                       {(page - 1) * pageSize + index + 1}
                     </td>
-                    <td className="px-6 py-1 text-gray-700">{blog.name}</td>
-                    <td className="px-6 py-1 text-gray-700 line-clamp-3 break-words">
-                      {blog.content}
+                    <td className="px-6 py-1 text-gray-700 line-clamp-2 break-words">
+                      {blog.name}
                     </td>
                     <td className="px-6 py-1 text-gray-700">
                       {blog?.Category?.name}
@@ -166,18 +164,27 @@ const BlogAdmin = () => {
                     </td>
                     <td className="px-6 py-1 text-gray-700">{blog.status}</td>
                     <td
-                      className="flex items-center justify-center gap-2 
+                      className="flex flex-col xl:flex-row items-center justify-center gap-2 
                        text-gray-700 py-1"
                     >
                       <Link to={`/admin/blog/${blog.id}`} className="btn-edit">
                         แก้ไขข้อมูล
                       </Link>
-                      <button
-                        className="btn-danger"
-                        onClick={() => handleRemove(blog?.id)}
-                      >
-                        ลบข้อมูล
-                      </button>
+                      {blog.status === "ACTIVE" ? (
+                        <button
+                          className="btn-danger"
+                          onClick={() => handleRemove(blog?.id)}
+                        >
+                          ลบข้อมูล
+                        </button>
+                      ) : (
+                        <button
+                          className="btn-warning"
+                          onClick={() => handleRemove(blog?.id)}
+                        >
+                          คืนกลับ
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}

@@ -1,10 +1,12 @@
-import React from "react";
-import { Outlet, useLocation, matchPath } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Outlet, useLocation, matchPath, useNavigate } from "react-router-dom";
 import SidebarAdmin from "../components/admin/SidebarAdmin";
 import { FaFolderOpen } from "react-icons/fa";
+import { verification } from "../utils/verification";
 
 const Admin = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const getPathName = (path) => {
     if (matchPath("/admin/user/:id", path)) {
@@ -34,6 +36,14 @@ const Admin = () => {
   };
 
   const pathName = getPathName(location.pathname);
+
+  useEffect(() => {
+    const verify = verification();
+
+    if (!verify) {
+      navigate(`/login`);
+    }
+  }, []);
 
   return (
     <div className="flex">

@@ -3,6 +3,7 @@ import { FaUser, FaClipboard, FaFolder } from "react-icons/fa";
 import { sumOfData, UserLogData } from "./../../composables/useDash";
 import Pagination from "../../components/admin/Pagination";
 import { formatDate } from "../../utils/formatDate";
+import Swal from "sweetalert2";
 
 const DashAdmin = () => {
   const [data, setData] = useState({

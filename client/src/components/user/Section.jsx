@@ -2,7 +2,7 @@ import React from "react";
 import Card from "./Card";
 import { Link } from "react-router-dom";
 
-const Section = () => {
+const Section = ({ blogs }) => {
   return (
     <div className="flex flex-col gap-4 mt-4">
       <div className="flex w-full items-center justify-between">
@@ -16,11 +16,8 @@ const Section = () => {
         </Link>
       </div>
       <div className="flex gap-4">
-        <Card />
-        <Card />
-        <Card />
-        <Card />
-        <Card />
+        {blogs.length !== 0 &&
+          blogs?.map((blog, index) => <Card blog={blog} key={index} />)}
       </div>
     </div>
   );

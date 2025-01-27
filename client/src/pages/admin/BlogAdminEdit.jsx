@@ -68,7 +68,6 @@ const BlogAdminEdit = () => {
       let uploadedImageUrl = null;
 
       if (imageFile && imageFile instanceof File) {
-        console.log(imageFile);
         const uploadResponse = await uploadImg(blogId, imageFile); // Use blogId in the API call
         uploadedImageUrl = uploadResponse.url; // Adjust based on your API response structure
       }

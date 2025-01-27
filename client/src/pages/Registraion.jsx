@@ -38,7 +38,6 @@ const Registraion = () => {
       }
     }
 
-    // ตรวจสอบรูปแบบของอีเมล
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       Swal.fire({
@@ -49,6 +48,40 @@ const Registraion = () => {
       });
       return;
     }
+
+    const telRegex = /^\d{10}$/;
+    if (!telRegex.test(formData.tel)) {
+      Swal.fire({
+        title: "ข้อผิดพลาด!",
+        text: "กรุณากรอกเบอร์โทรศัพท์ 10 หลัก",
+        icon: "warning",
+        confirmButtonText: "ตกลง",
+      });
+      return;
+    }
+
+    const usernameRegex = /^[A-Za-z0-9_]+$/;
+    if (!usernameRegex.test(formData.username)) {
+      Swal.fire({
+        title: "ข้อผิดพลาด!",
+        text: "กรุณากรอก username เป็นภาษาอังกฤษเท่านั้น",
+        icon: "warning",
+        confirmButtonText: "ตกลง",
+      });
+      return;
+    }
+
+    const passwordRegex = /^[A-Za-z0-9]+$/;
+    if (!passwordRegex.test(formData.password)) {
+      Swal.fire({
+        title: "ข้อผิดพลาด!",
+        text: "กรุณากรอก password เป็นภาษาอังกฤษเท่านั้น",
+        icon: "warning",
+        confirmButtonText: "ตกลง",
+      });
+      return;
+    }
+
     try {
       const response = await register(
         formData.username,

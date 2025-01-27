@@ -12,7 +12,7 @@ const get = async (endpoint, params = {}) => {
 };
 
 export const sumOfData = async () => {
-  const response = await get(`/dashboard/sum-of-data`);
+  const response = await get(`dashboard/sum-of-data`);
 
   return response.data;
 };

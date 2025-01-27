@@ -143,10 +143,22 @@ module.exports = {
         userId: user.id,
       });
     } catch (error) {
-      return res.status(500).send({
-        success: false,
-        message: error.message,
-      });
+      if (error?.meta?.target === "User_username_key") {
+        return res.status(400).send({
+          success: false,
+          message: "This email is already taken",
+        });
+      } else if (error?.meta?.target === "User_email_key") {
+        return res.status(400).send({
+          success: false,
+          message: "This email is already taken",
+        });
+      } else {
+        return res.status(500).send({
+          success: false,
+          message: error.message,
+        });
+      }
     }
   },
   gets: async (req, res) => {
