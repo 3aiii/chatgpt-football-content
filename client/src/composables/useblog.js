@@ -61,3 +61,19 @@ export const remove = async (blogId) => {
 
   return response.data;
 };
+export const createComment = async (blogId, userId, text) => {
+  const response = await axios.post(
+    `${HOST_URL}/blog/createComment/${blogId}`,
+    { userId, text },
+    {
+      withCredentials: true,
+    }
+  );
+
+  return response.data;
+};
+export const getComment = async (blogId) => {
+  const response = await get(`blog/comment/${blogId}`);
+
+  return response.data;
+};

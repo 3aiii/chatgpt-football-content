@@ -111,7 +111,7 @@ module.exports = {
       const blogs = await prisma.blog.findMany({
         where: {
           categoryId: findCate.id,
-          status: "ACTIVE"
+          status: "ACTIVE",
         },
         include: {
           Category: true,

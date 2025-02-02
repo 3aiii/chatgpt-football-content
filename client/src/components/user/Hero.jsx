@@ -18,7 +18,7 @@ const Hero = ({ heroblogs }) => {
                   : `https://placehold.co/600x300`
               }
               alt={heroblogs[0]?.name}
-              className="w-full object-cover rounded-lg"
+              className="w-full h-[300px] object-cover rounded-lg"
             />
             <div className="font-bold my-2">{heroblogs[0]?.Category?.name}</div>
             <div className="text-2xl font-bold mb-2 hover:underline line-clamp-2 break-words">

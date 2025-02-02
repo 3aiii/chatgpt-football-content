@@ -40,7 +40,6 @@ module.exports = {
 
     if (req.cookies.token) {
       const decoded = jwt.verify(req.cookies.token, process.env.JWT_SECRET);
-
       if (decoded?.role === "ADMIN") {
         dynamicStatus = {
           OR: [{ status: "ACTIVE" }, { status: "HIDDEN" }],
@@ -295,7 +294,141 @@ module.exports = {
         message: "Upload image successfully!",
       });
     } catch (error) {
-      console.log(error);
+      return res.status(500).send({
+        success: false,
+        message: error.message,
+      });
+    }
+  },
+  getComment: async (req, res) => {
+    const { blogId } = req.params;
+
+    try {
+      const comments = await prisma.comments.findMany({
+        where: {
+          blogId,
+        },
+        select: {
+          text: true,
+          createdAt: true,
+          blogId: true,
+          user: {
+            select: {
+              id: true,
+              username: true,
+              fname: true,
+              lname: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      return res.status(200).send({
+        success: true,
+        data: comments,
+      });
+    } catch (error) {
+      return res.status(500).send({
+        success: false,
+        message: error.message,
+      });
+    }
+  },
+  createComment: async (req, res) => {
+    const { blogId } = req.params;
+    const { userId, text } = req.body;
+
+    try {
+      await prisma.comments.create({
+        data: {
+          text,
+          userId,
+          blogId,
+        },
+      });
+
+      return res.status(201).send({
+        success: true,
+        message: "Created comment already!",
+      });
+    } catch (error) {
+      return res.status(500).send({
+        success: false,
+        message: error.message,
+      });
+    }
+  },
+  createRating: async (req, res) => {
+    const { blogId } = req.params;
+    const { rating, userId } = req.body;
+
+    try {
+      const ratingExist = await prisma.rating.findFirst({
+        where: {
+          userId,
+          blogId,
+        },
+      });
+
+      if (ratingExist) {
+        await prisma.rating.update({
+          where: {
+            userId,
+            blogId,
+          },
+          data: {
+            rating,
+          },
+        });
+
+        return res.status(201).send({
+          success: true,
+          message: "rating this blog already!",
+        });
+      }
+
+      await prisma.rating.create({
+        data: {
+          rating,
+          userId,
+          blogId,
+        },
+      });
+
+      return res.status(201).send({
+        success: true,
+        message: "rating this blog already!",
+      });
+    } catch (error) {
+      return res.status(500).send({
+        success: false,
+        message: error.message,
+      });
+    }
+  },
+  removeRating: async (req, res) => {
+    try {
+      const { blogId } = req.params;
+      const { userId } = req.body;
+
+      await prisma.rating.update({
+        where: {
+          userId,
+          blogId,
+        },
+        data: {
+          rating: 0,
+        },
+      });
+
+      return res.status(200).send({
+        success: true,
+        message: "Removed rating already!",
+      });
+    } catch (error) {
       return res.status(500).send({
         success: false,
         message: error.message,
