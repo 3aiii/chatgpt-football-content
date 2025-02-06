@@ -110,7 +110,7 @@ const UserAdmin = () => {
               <th className="col-field">ชื่อผู้ใช้งาน</th>
               <th className="col-field">อีเมล์</th>
               <th className="col-field">เบอร์โทรศัพท์</th>
-              <th className="col-field w-[10%]">วันเวลาที่สร้าง</th>
+              <th className="col-field w-[10%]">วันที่สร้าง</th>
               <th className="col-field">บทบาท</th>
               <th className="w-[15%] lg:w-[20%] xl:w-[25%]"></th>
             </tr>

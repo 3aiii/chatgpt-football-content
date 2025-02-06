@@ -118,7 +118,7 @@ const BlogAdmin = () => {
               <th className="col-field">หัวข้อ</th>
               <th className="col-field">หมวดหมู่</th>
               <th className="col-field">ผู้สร้าง</th>
-              <th className="col-field w-[10%]">วันเวลาที่สร้าง</th>
+              <th className="col-field w-[10%]">วันที่สร้าง</th>
               <th className="col-field">สถานะ</th>
               <th className="w-[15%] lg:w-[20%] xl:w-[25%]"></th>
             </tr>

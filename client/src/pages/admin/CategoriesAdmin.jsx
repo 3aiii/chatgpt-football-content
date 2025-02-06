@@ -154,7 +154,7 @@ const CategoriesAdmin = () => {
             <tr>
               <th className="px-6 py-4 text-left">#</th>
               <th className="px-6 py-4 text-left">ชื่อหมวดหมู่</th>
-              <th className="px-6 py-4 text-left">วันเวลาที่สร้าง</th>
+              <th className="px-6 py-4 text-left">วันที่สร้าง</th>
               <th className="px-6 py-4 text-left"></th>
             </tr>
           </thead>
