@@ -271,6 +271,7 @@ module.exports = {
           email: true,
           tel: true,
           role: true,
+          Rating: true,
         },
       });
 

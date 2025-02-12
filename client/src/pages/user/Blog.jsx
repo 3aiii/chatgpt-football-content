@@ -1,33 +1,71 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { fetch } from "../../composables/useblog";
+import { fetch, removeRating } from "../../composables/useblog";
 import { formatDate } from "../../utils/formatDate";
-import { IMAGE_URL } from "../../secret";
+import { HOST_URL, IMAGE_URL } from "../../secret";
 import Comment from "../../components/user/comment";
 import { FaRegStar, FaStar } from "react-icons/fa";
+import { jwtDecode } from "jwt-decode";
+import Cookies from "js-cookie";
+import axios from "axios";
+import { ratings } from "./../../composables/useblog";
 
 const Blog = () => {
   const { id } = useParams();
   const [blog, setBlog] = useState([]);
+  const [user, setUser] = useState(null);
   const [rating, setRating] = useState(0);
+  const [userRating, setUserRating] = useState(null);
 
-  const handleRating = (index) => {
-    setRating(index + 1);
+  const handleRating = async (index) => {
+    const newRating = index + 1;
+    setRating(newRating);
+
+    const response = await ratings({ rating: newRating, userId: user.id }, id);
+    setUserRating(response.data);
   };
 
-  const resetRating = () => {
-    setRating(0);
+  const resetRating = async () => {
+    if (userRating) {
+      const response = await removeRating({ userId: user.id }, id);
+      setUserRating(null);
+      setRating(0);
+    }
+  };
+
+  const fetchUser = async () => {
+    const token = Cookies.get("token");
+    const decoded = jwtDecode(token);
+    const response = await axios.get(`${HOST_URL}/user/${decoded.userId}`, {
+      withCredentials: true,
+    });
+    setUser(response?.data?.data);
   };
 
   const fetchBlog = async () => {
     const response = await fetch(id);
+    setBlog(response?.data);
 
-    setBlog(response.data);
+    // ค้นหา Rating ของ user ที่ล็อกอินอยู่
+    const existingRating = response?.data?.Rating?.find(
+      (r) => r.userId === user?.id
+    );
+
+    if (existingRating) {
+      setRating(existingRating.rating);
+      setUserRating(existingRating);
+    }
   };
 
   useEffect(() => {
-    fetchBlog();
+    fetchUser();
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      fetchBlog();
+    }
+  }, [user]);
 
   return (
     <>
@@ -42,7 +80,6 @@ const Blog = () => {
       </div>
       <div className="flex justify-center items-center mt-4">
         <div className="w-[800px]">
-          <div className="flex space-x-2"></div>
           <img
             src={
               blog?.image
@@ -59,40 +96,46 @@ const Blog = () => {
           </div>
         </div>
       </div>
+      {/* Rating System */}
       <div className="flex flex-col text-left justify-center items-center mt-2">
-        <div className="w-[800px]">
-          <div className="flex flex-col items-center space-y-2 p-4 pt-4 rounded-lg w-full">
-            <h2 className="text-xl font-semibold">ให้คะแนนแก่บทความนี้</h2>
-            <p className="text-sm text-gray-500">
-              เลือกจำนวนดาวที่ต้องการให้คะแนน (1 ถึง 5 ดาว)
-            </p>
-            <div className="flex justify-center items-center space-x-2">
-              {[...Array(5)].map((_, index) => (
-                <div
-                  key={index}
-                  onClick={() => handleRating(index)}
-                  className="cursor-pointer"
+        {user ? (
+          <div className="w-[800px]">
+            <div className="flex flex-col items-center space-y-2 p-4 pt-4 rounded-lg w-full">
+              <h2 className="text-xl font-semibold">ให้คะแนนแก่บทความนี้</h2>
+              <p className="text-sm text-gray-500">
+                เลือกจำนวนดาวที่ต้องการให้คะแนน (1 ถึง 5 ดาว)
+              </p>
+              <div className="flex justify-center items-center space-x-2">
+                {[...Array(5)].map((_, index) => (
+                  <div
+                    key={index}
+                    onClick={() => handleRating(index)}
+                    className="cursor-pointer"
+                  >
+                    {index < rating ? (
+                      <FaStar className="w-8 h-8 text-yellow-400" />
+                    ) : (
+                      <FaRegStar className="w-8 h-8 text-gray-300" />
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {rating > 0 ? (
+                <button
+                  onClick={resetRating}
+                  className="mt-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
                 >
-                  {index < rating ? (
-                    <FaStar className="w-8 h-8 text-yellow-400" />
-                  ) : (
-                    <FaRegStar className="w-8 h-8 text-gray-300" />
-                  )}
-                </div>
-              ))}
+                  ยกเลิกการให้คะแนน
+                </button>
+              ) : (
+                <></>
+              )}
             </div>
-            {rating > 0 ? (
-              <button
-                onClick={resetRating}
-                className="mt-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-              >
-                ยกเลิกการให้คะแนน
-              </button>
-            ) : (
-              <></>
-            )}
           </div>
-        </div>
+        ) : (
+          <></>
+        )}
         <Comment />
       </div>
     </>

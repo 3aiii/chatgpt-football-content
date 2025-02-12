@@ -115,8 +115,26 @@ module.exports = {
         },
         include: {
           Category: true,
+          _count: {
+            select: {
+              Comment: true,
+            },
+          },
         },
       });
+
+      for (let blog of blogs) {
+        const aggregationRating = await prisma.rating.aggregate({
+          where: {
+            blogId: blog.id,
+          },
+          _avg: {
+            rating: true,
+          },
+        });
+
+        blog.averageRating = aggregationRating._avg.rating || 0;
+      }
 
       return res.status(200).send({
         success: true,

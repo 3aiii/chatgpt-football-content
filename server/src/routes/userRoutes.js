@@ -6,7 +6,7 @@ const {
 } = require("../middlewares/verificationMiddleware");
 
 userRoute.get("/gets", verifyAdmin, userController.gets);
-userRoute.get("/:userId", verifyUser, userController.get);
+userRoute.get("/:userId", userController.get);
 userRoute.post("/logout/:userId", verifyUser, userController.logout);
 userRoute.post("/login", userController.login);
 userRoute.post("/register", userController.create);

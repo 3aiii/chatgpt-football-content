@@ -77,3 +77,30 @@ export const getComment = async (blogId) => {
 
   return response.data;
 };
+export const ratings = async (data, blogId) => {
+  const response = await axios.post(
+    `${HOST_URL}/blog/rating/${blogId}`,
+    {
+      rating: data.rating,
+      userId: data.userId,
+    },
+    {
+      withCredentials: true,
+    }
+  );
+
+  return response.data;
+};
+export const removeRating = async (data, blogId) => {
+  const response = await axios.put(
+    `${HOST_URL}/blog/rating/${blogId}`,
+    {
+      userId: data.userId,
+    },
+    {
+      withCredentials: true,
+    }
+  );
+
+  return response.data;
+};

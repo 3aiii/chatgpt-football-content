@@ -4,6 +4,8 @@ import Swal from "sweetalert2";
 import { useParams } from "react-router-dom";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
+import { formatDate } from "./../../utils/formatDate";
+import { FaClock } from "react-icons/fa";
 
 const Comment = () => {
   const { id } = useParams();
@@ -102,16 +104,23 @@ const Comment = () => {
           </button>
         </div>
       </div>
-      <div className="mt-4">
+      <div className="mt-4 border-t-[1px]">
         {comments?.map((comment, index) => (
-          <div key={index} className={`flex items-center gap-4 mb-4 `}>
+          <div key={index} className={`flex items-center gap-4 mb-4 mt-4`}>
             <img
               src="https://placehold.co/50x50"
               className="w-10 h-10 rounded-full"
             />
-            <div>
-              <div className="font-semibold text-lg">
-                {comment?.user?.fname} {comment?.user?.lname}
+            <div className="w-full">
+              <div className="flex justify-between gap-4 font-semibold text-base">
+                <p>
+                  {comment?.user?.fname} {comment?.user?.lname}
+                </p>
+                <p className="flex items-center gap-2 text-base font-light">
+                  {" "}
+                  <FaClock className="text-purple-500" />
+                  {formatDate(comment?.createdAt)}
+                </p>
               </div>
               <div className="break-words">{comment?.text}</div>
             </div>

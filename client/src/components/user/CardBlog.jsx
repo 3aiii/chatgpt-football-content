@@ -5,6 +5,7 @@ import { formatDate } from "./../../utils/formatDate";
 import { IMAGE_URL } from "../../secret";
 
 const CardBlog = ({ blog }) => {
+  console.log(blog);
   return (
     <Link
       to={`/blog/${blog.id}`}
@@ -37,11 +38,13 @@ const CardBlog = ({ blog }) => {
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-2">
             <FaStar className="text-yellow-500" />
-            <p className="text-sm font-light">4.2</p>
+            <p className="text-sm font-light">
+              {blog?.averageRating?.toFixed(2)}
+            </p>
           </div>
           <div className="flex items-center gap-2">
             <FaComment className="text-purple-500" />
-            <p className="text-sm font-light">6</p>
+            <p className="text-sm font-light">{blog?._count?.Comment}</p>
           </div>
         </div>
       </div>

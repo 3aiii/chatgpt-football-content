@@ -119,6 +119,11 @@ module.exports = {
             createdAt: true,
             Category: true,
             status: true,
+            _count: {
+              select: {
+                Comment: true,
+              },
+            },
             user: {
               select: {
                 id: true,
@@ -145,6 +150,19 @@ module.exports = {
         });
       }
 
+      for (let blog of blogs) {
+        const aggregationRating = await prisma.rating.aggregate({
+          where: {
+            blogId: blog.id,
+          },
+          _avg: {
+            rating: true,
+          },
+        });
+
+        blog.averageRating = aggregationRating._avg.rating || 0;
+      }
+
       if (blogs.length === 0) {
         return res.send({
           success: false,
@@ -157,6 +175,7 @@ module.exports = {
       return res.status(200).send({
         success: true,
         data: blogs,
+        rating: blogs.averageRating,
         pagination: {
           totalBlogs,
           totalPages,
@@ -164,7 +183,6 @@ module.exports = {
         },
       });
     } catch (error) {
-      console.log(error);
       return res.status(500).send({
         success: false,
         message: error.message,
@@ -179,6 +197,7 @@ module.exports = {
         where: { id: blogId },
         include: {
           Category: true,
+          Rating: true,
         },
       });
 
@@ -364,7 +383,6 @@ module.exports = {
   createRating: async (req, res) => {
     const { blogId } = req.params;
     const { rating, userId } = req.body;
-
     try {
       const ratingExist = await prisma.rating.findFirst({
         where: {
@@ -376,8 +394,7 @@ module.exports = {
       if (ratingExist) {
         await prisma.rating.update({
           where: {
-            userId,
-            blogId,
+            id: ratingExist?.id,
           },
           data: {
             rating,
@@ -414,10 +431,13 @@ module.exports = {
       const { blogId } = req.params;
       const { userId } = req.body;
 
+      const ratingExist = await prisma.rating.findFirst({
+        where: { userId, blogId },
+      });
+
       await prisma.rating.update({
         where: {
-          userId,
-          blogId,
+          id: ratingExist?.id,
         },
         data: {
           rating: 0,
