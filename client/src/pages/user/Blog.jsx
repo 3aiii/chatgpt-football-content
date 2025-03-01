@@ -27,7 +27,7 @@ const Blog = () => {
 
   const resetRating = async () => {
     if (userRating) {
-      const response = await removeRating({ userId: user.id }, id);
+      await removeRating({ userId: user.id }, id);
       setUserRating(null);
       setRating(0);
     }
@@ -62,9 +62,7 @@ const Blog = () => {
   }, []);
 
   useEffect(() => {
-    if (user) {
-      fetchBlog();
-    }
+    fetchBlog();
   }, [user]);
 
   return (

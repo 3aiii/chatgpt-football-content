@@ -5,7 +5,6 @@ import { formatDate } from "./../../utils/formatDate";
 import { IMAGE_URL } from "../../secret";
 
 const CardBlog = ({ blog }) => {
-  console.log(blog);
   return (
     <Link
       to={`/blog/${blog.id}`}

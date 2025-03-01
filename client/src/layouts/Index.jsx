@@ -8,6 +8,7 @@ import Categories from "../components/Categories";
 const Index = () => {
   const location = useLocation();
   const isEditPage = matchPath("/edit/:id", location.pathname);
+  const isSystemPage = matchPath("/system", location.pathname);
   const isCatePage = matchPath("/category/:name", location.pathname);
 
   return (
@@ -21,7 +22,7 @@ const Index = () => {
       <div className="w-full">
         <Outlet />
       </div>
-      {isEditPage || isCatePage ? (
+      {isEditPage || isCatePage || isSystemPage ? (
         <></>
       ) : (
         <div className="w-full bg-[#37003c] text-white mt-6">
