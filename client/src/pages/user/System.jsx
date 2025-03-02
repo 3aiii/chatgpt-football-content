@@ -2,8 +2,15 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { fetchs } from "../../composables/useCate";
 import Swal from "sweetalert2";
+import Cookies from "js-cookie";
+import { jwtDecode } from "jwt-decode";
+import { create, saveLog } from "../../composables/useblog";
+import { useNavigate } from "react-router-dom";
 
 const System = () => {
+  const token = Cookies.get("token");
+  const navigate = useNavigate();
+
   const [userPrompt, setUserPrompt] = useState("");
   const [response, setResponse] = useState("");
   const [editedResponse, setEditedResponse] = useState("");
@@ -16,18 +23,35 @@ const System = () => {
     category: "",
     user_id: "",
   });
-  console.log(response);
+
   const fetchData = async (prompt) => {
+    if (!token) {
+      return Swal.fire({
+        title: "กรุณาเข้าสู่ระบบ!",
+        text: "คุณต้องเข้าสู่ระบบเพื่อใช้งานระบบนี้",
+        icon: "warning",
+        confirmButtonText: "ตกลง",
+        timer: 2000,
+        timerProgressBar: true,
+      });
+    }
+
     try {
       setLoading(true);
       const apiResponse = await axios.post("http://localhost:3001/api/system", {
         message: prompt,
       });
 
-      setResponse(apiResponse.data.data);
-      setEditedResponse(apiResponse.data.data);
+      const generatedContent = apiResponse.data.data;
+
+      setResponse(generatedContent);
+      setEditedResponse(generatedContent);
+
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        content: generatedContent,
+      }));
     } catch (error) {
-      setLoading(false);
       console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
@@ -48,13 +72,36 @@ const System = () => {
     }
   };
 
-  const handlePromptSubmit = () => {
+  const handlePromptSubmit = async () => {
     if (userPrompt.trim() === "") return;
-    fetchData(userPrompt);
-  };
 
-  const handleChange = (e) => {
-    setEditedResponse(e.target.value);
+    if (!token) {
+      return Swal.fire({
+        title: "กรุณาเข้าสู่ระบบ!",
+        text: "คุณต้องเข้าสู่ระบบเพื่อใช้งานระบบนี้",
+        icon: "warning",
+        confirmButtonText: "ตกลง",
+        timer: 2000,
+        timerProgressBar: true,
+      });
+    }
+
+    try {
+      const decoded = jwtDecode(token);
+      const userId = decoded.userId;
+
+      await saveLog(userPrompt, userId);
+
+      fetchData(userPrompt);
+    } catch (error) {
+      console.error("Error saving log:", error);
+      Swal.fire({
+        title: "เกิดข้อผิดพลาด!",
+        text: "ไม่สามารถบันทึก Log ได้",
+        icon: "error",
+        confirmButtonText: "ลองอีกครั้ง",
+      });
+    }
   };
 
   const handleInputChange = (e) => {
@@ -62,7 +109,97 @@ const System = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleSubmit = async () => {
+    if (
+      !formData.title.trim() ||
+      !formData.content.trim() ||
+      !formData.category
+    ) {
+      return Swal.fire({
+        title: "ข้อมูลไม่ครบ!",
+        text: "โปรดกรอกข้อมูลให้ครบทุกช่อง (ชื่อบทความ, เนื้อหา, หมวดหมู่)",
+        icon: "warning",
+        confirmButtonText: "ตกลง",
+      });
+    }
+
+    try {
+      // if (imageFile) {
+      //   const filetypes = /jpeg|jpg|png/;
+      //   const isValidType = filetypes.test(imageFile.type); // Validate MIME type
+      //   const isValidExtension = filetypes.test(
+      //     imageFile.name.split(".").pop().toLowerCase()
+      //   );
+
+      //   if (!isValidType || !isValidExtension) {
+      //     return Swal.fire({
+      //       title: "รูปภาพไม่ถูกต้อง!",
+      //       text: "โปรดอัพโหลดไฟล์รูปภาพประเภท JPEG, JPG หรือ PNG เท่านั้น",
+      //       icon: "error",
+      //       confirmButtonText: "ตกลง",
+      //     });
+      //   }
+      // }
+
+      const response = await create({
+        name: formData.title,
+        content: formData.content,
+        cateId: formData.category,
+        userId: formData.user_id,
+      });
+
+      if (response.success) {
+        // const blogId = response.data; // Assuming the API response includes the created blog's ID
+        // let uploadedImageUrl = null;
+
+        // if (imageFile) {
+        //   const uploadResponse = await uploadImg(blogId, imageFile); // Use blogId in the API call
+        //   uploadedImageUrl = uploadResponse.url; // Adjust based on your API response structure
+        // }
+
+        Swal.fire({
+          title: "สำเร็จ!",
+          text: "บทความถูกสร้างเรียบร้อยแล้ว",
+          icon: "success",
+          confirmButtonText: "ตกลง",
+        }).then(() => {
+          // Clear form
+          setFormData({
+            upload: null,
+            title: "",
+            content: "",
+            category: "",
+          });
+          navigate("/blogs");
+          // setImageFile(null);
+        });
+      } else {
+        Swal.fire({
+          title: "เกิดข้อผิดพลาด!",
+          text: "ไม่สามารถสร้างบทความได้",
+          icon: "error",
+          confirmButtonText: "ลองอีกครั้ง",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "เกิดข้อผิดพลาด!",
+        text: error.message,
+        icon: "error",
+        confirmButtonText: "ลองอีกครั้ง",
+      });
+    }
+  };
+
   useEffect(() => {
+    if (token) {
+      const decoded = jwtDecode(token);
+      setFormData({
+        ...formData,
+        user_id: decoded.userId,
+      });
+    }
+
     fetchCategories();
   }, []);
 
@@ -83,7 +220,7 @@ const System = () => {
             value={userPrompt}
             onChange={(e) => setUserPrompt(e.target.value)}
             placeholder="💬 พิมพ์ข้อความของคุณ..."
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm text-lg "
+            className="w-full mt-1 px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
             onClick={handlePromptSubmit}
@@ -108,6 +245,9 @@ const System = () => {
               <label className="text-gray-700 font-medium">📌 หัวข้อ</label>
               <input
                 type="text"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
                 className="w-full mt-1 px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -117,8 +257,9 @@ const System = () => {
                 ✍️ เนื้อหาบทความ
               </label>
               <textarea
-                value={editedResponse}
-                onChange={handleChange}
+                name="content"
+                value={formData.content}
+                onChange={handleInputChange}
                 rows="6"
                 className="w-full mt-1 px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
@@ -138,7 +279,9 @@ const System = () => {
                   </option>
                 ))}
               </select>
-              <button className="btn-success">🚀 สร้างบทความจาก AI</button>
+              <button onClick={handleSubmit} className="btn-success">
+                🚀 สร้างบทความจาก AI
+              </button>
             </div>
           </div>
         )}

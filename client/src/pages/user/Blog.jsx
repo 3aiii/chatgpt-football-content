@@ -16,7 +16,7 @@ const Blog = () => {
   const [user, setUser] = useState(null);
   const [rating, setRating] = useState(0);
   const [userRating, setUserRating] = useState(null);
-
+  
   const handleRating = async (index) => {
     const newRating = index + 1;
     setRating(newRating);
@@ -26,11 +26,9 @@ const Blog = () => {
   };
 
   const resetRating = async () => {
-    if (userRating) {
-      await removeRating({ userId: user.id }, id);
-      setUserRating(null);
-      setRating(0);
-    }
+    await removeRating({ userId: user.id }, id);
+    setUserRating(null);
+    setRating(0);
   };
 
   const fetchUser = async () => {

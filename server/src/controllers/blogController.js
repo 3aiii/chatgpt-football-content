@@ -435,12 +435,9 @@ module.exports = {
         where: { userId, blogId },
       });
 
-      await prisma.rating.update({
+      await prisma.rating.delete({
         where: {
           id: ratingExist?.id,
-        },
-        data: {
-          rating: 0,
         },
       });
 

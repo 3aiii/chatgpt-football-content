@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { createComment, getComment } from "../../composables/useblog";
 import Swal from "sweetalert2";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import { formatDate } from "./../../utils/formatDate";
@@ -9,17 +9,30 @@ import { FaClock } from "react-icons/fa";
 
 const Comment = () => {
   const { id } = useParams();
+  const token = Cookies.get("token");
+  const navigate = useNavigate();
+
   const [text, setText] = useState("");
   const [comments, setComments] = useState([]);
-  const token = Cookies.get("token");
 
   const handleComment = async () => {
+    if (text === "") {
+      return Swal.fire({
+        title: "กรุณาพิมพ์ความคิดเห็น!",
+        text: "คุณต้องพิมพ์ความคิดเห็นก่อนส่ง",
+        icon: "warning",
+        confirmButtonText: "ตกลง",
+      });
+    }
+
     if (!token) {
       return Swal.fire({
         title: "เกิดข้อผิดพลาด!",
         text: "กรุณาเข้าสู่ระบบก่อนส่งความคิดเห็น",
         icon: "warning",
         confirmButtonText: "ตกลง",
+      }).then(() => {
+        navigate("/login");
       });
     }
 
@@ -35,6 +48,7 @@ const Comment = () => {
           icon: "success",
           confirmButtonText: "ปิด",
         }).then(() => {
+          setText("");
           fetchComment();
         });
       } else {
@@ -44,6 +58,8 @@ const Comment = () => {
           icon: "error",
           confirmButtonText: "ลองใหม่",
         });
+
+        setText("");
       }
     } catch (error) {
       Swal.fire({
@@ -93,6 +109,7 @@ const Comment = () => {
           type="text"
           placeholder="ความคิดเห็นของคุณ"
           onChange={(e) => setText(e.target.value)}
+          value={text}
           className="w-full h-28 p-2 rounded-lg border-[1px] focus:outline-none focus:border-[#37003c]"
         ></textarea>
         <div className="flex justify-end w-full">

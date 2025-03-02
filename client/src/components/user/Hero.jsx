@@ -33,7 +33,11 @@ const Hero = ({ heroblogs }) => {
         {heroblogs.slice(1, 3).map((blog, index) => (
           <Link to={`/blog/${blog?.id}`} key={index} className="cursor-pointer">
             <img
-              src={`${IMAGE_URL}/${blog?.image}`}
+              src={
+                blog?.image
+                  ? `${IMAGE_URL}/${blog?.image}`
+                  : `https://placehold.co/300x170`
+              }
               alt={blog?.name}
               className="w-[300px] object-cover rounded-lg"
             />

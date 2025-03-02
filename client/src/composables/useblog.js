@@ -104,3 +104,14 @@ export const removeRating = async (data, blogId) => {
 
   return response.data;
 };
+export const saveLog = async (message, userId) => {
+  const response = await axios.post(
+    `${HOST_URL}/system/save-log`,
+    { message, userId },
+    {
+      withCredentials: true,
+    }
+  );
+
+  return response.data;
+};
