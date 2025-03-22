@@ -13,7 +13,7 @@ def chat():
     try:
         data = request.get_json()
         user_message = data.get("message", "")
-        print(user_message)
+        
         response = openai.ChatCompletion.create(
             model="deepseek/deepseek-r1:free",
             messages=[

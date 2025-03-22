@@ -121,6 +121,7 @@ const SidebarAdmin = () => {
               isActive("/admin/blogs") ||
               isActive("/admin/blogs/insert") ||
               isActive("/admin/blog/:id") ||
+              isActive("/admin/system") ||
               isActive("/admin/categories")
                 ? "bg-gradient-to-r from-purple-500 to-indigo-500 font-semibold text-white"
                 : "text-gray-700"

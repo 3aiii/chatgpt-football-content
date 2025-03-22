@@ -29,7 +29,6 @@ const App = () => {
           <Route path="/blogs" element={<Blogs />} />
           <Route path="/blog/:id" element={<Blog />} />
           <Route path="/edit/:id" element={<Edit />} />
-          <Route path="/system" element={<System />} />
           <Route path="/category/:name" element={<Category />} />
         </Route>
         <Route path="/" element={<Auth />}>
@@ -45,6 +44,7 @@ const App = () => {
           <Route path="users/insert" element={<UserAdminInsert />} />
           <Route path="user/:id" element={<UserAdminEdit />} />
           <Route path="categories" element={<CategoriesAdmin />} />
+          <Route path="system" element={<System />} />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -220,6 +220,27 @@ module.exports = {
     }
   },
   recommend: async (req, res) => {
+    try {
+      const data = await prisma.rating.findMany({
+        include: {
+          blogs: true,
+        },
+        orderBy: {
+          rating: "desc",
+        },
+        take: 5,
+      });
+
+      return res.status(200).send({
+        succes: true,
+        data,
+      });
+    } catch (error) {
+      return res.status(500).send({
+        success: false,
+        message: error.message,
+      });
+    }
     // wait to rating score from phase 3 or 4
   },
   delete: async (req, res) => {

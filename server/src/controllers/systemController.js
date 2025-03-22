@@ -25,7 +25,7 @@ module.exports = {
   },
   saveLog: async (req, res) => {
     const { message, userId } = req.body;
-    console.log(message);
+    
     if (message === undefined || message === null || message === "") {
       return res.send({
         success: false,

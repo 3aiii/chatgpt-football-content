@@ -47,6 +47,12 @@ export const fetch = async (blogId) => {
 
   return response.data;
 };
+
+export const recommand = async () => {
+  const response = await get(`blog/recommend`);
+
+  return response.data;
+};
 export const update = async (data, blogId) => {
   const response = await axios.put(`${HOST_URL}/blog/${blogId}`, data, {
     withCredentials: true,

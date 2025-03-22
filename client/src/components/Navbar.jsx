@@ -104,19 +104,6 @@ const Navbar = () => {
                 บทความ
               </Link>
             </li>
-            <li>
-              <Link
-                className={`flex items-center gap-2 transition ${
-                  location.pathname === "/system" ? `border-b-2` : ``
-                }`}
-                to={"/system"}
-              >
-                ใช้งานระบบ{" "}
-                <div className="bg-blue-500 text-xs rounded-md px-4 py-[2px]">
-                  แนะนำ
-                </div>
-              </Link>
-            </li>
           </ul>
         </div>
         <div className="flex">

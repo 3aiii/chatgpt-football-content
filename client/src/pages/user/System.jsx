@@ -170,7 +170,7 @@ const System = () => {
             content: "",
             category: "",
           });
-          navigate("/blogs");
+          navigate("/admin/blogs");
           // setImageFile(null);
         });
       } else {
@@ -205,7 +205,7 @@ const System = () => {
 
   return (
     <div className="flex justify-center items-start min-h-screen bg-gray-100 px-4">
-      <div className="w-[1280px] bg-white shadow-lg rounded-xl p-6 mt-4">
+      <div className="bg-white w-full shadow-lg rounded-xl p-6 mt-4">
         {/* Header */}
         <div className="flex items-center text-3xl font-semibold text-gray-800 border-b pb-4">
           <div className="flex-grow h-1 bg-gray-300"></div>

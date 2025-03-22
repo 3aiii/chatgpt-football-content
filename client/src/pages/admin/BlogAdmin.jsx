@@ -6,6 +6,7 @@ import { fetchs, remove } from "../../composables/useblog";
 import { formatDate } from "./../../utils/formatDate";
 import Pagination from "../../components/admin/Pagination";
 import Swal from "sweetalert2";
+import { GrSystem } from "react-icons/gr";
 
 const BlogAdmin = () => {
   const [blogs, setBlogs] = useState([]);
@@ -92,6 +93,17 @@ const BlogAdmin = () => {
           </div>
         </div>
         <div className="flex gap-2">
+          <Link
+            className="flex items-center justify-center gap-2 px-4 
+              py-2 text-lg bg-violet-500 hover:bg-violet-600 rounded-lg text-white transition"
+            to={"/admin/system"}
+          >
+            <GrSystem />
+            ใช้งาน AI Generate Content
+            <div className="bg-white text-xs text-black rounded-md px-4 py-[2px]">
+              แนะนำ
+            </div>
+          </Link>
           <Link
             className="btn-info flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-lg"
             to={"/admin/categories"}
