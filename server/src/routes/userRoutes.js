@@ -10,7 +10,7 @@ userRoute.get("/:userId", userController.get);
 userRoute.post("/logout/:userId", verifyUser, userController.logout);
 userRoute.post("/login", userController.login);
 userRoute.post("/register", userController.create);
-userRoute.delete("/:userId", verifyAdmin, userController.delete);
 userRoute.put("/:userId", verifyUser, userController.update);
+userRoute.delete("/:userId", verifyAdmin, userController.delete);
 
 module.exports = userRoute;

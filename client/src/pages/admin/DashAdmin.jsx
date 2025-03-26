@@ -63,7 +63,7 @@ const DashAdmin = () => {
         <div className="card bg-blue-500 text-white rounded-lg shadow-lg p-6 flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold">{data.SumOfUser}</h2>
-            <p className="text-xl font-semibold">จำนวณผู้ใช้งานทั้งหมด</p>
+            <p className="text-xl font-semibold">จำนวนผู้ใช้งานทั้งหมด</p>
           </div>
           <FaUser className="text-3xl" />
         </div>
@@ -79,7 +79,7 @@ const DashAdmin = () => {
         <div className="card bg-purple-500 text-white rounded-lg shadow-lg p-6 flex items-center justify-between">
           <div>
             <h2 className="text-xl font-bold">{data.SumOfCategory}</h2>
-            <p className="text-xl font-semibold">จำนวณหมวดหมู่ทั้งหมด</p>
+            <p className="text-xl font-semibold">จำนวนหมวดหมู่ทั้งหมด</p>
           </div>
           <FaFolder className="text-3xl" />
         </div>

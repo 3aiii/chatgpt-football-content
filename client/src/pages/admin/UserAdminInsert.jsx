@@ -32,13 +32,13 @@ const UserAdminInsert = () => {
   const create = async (data) => {
     try {
       const response = await register(
-        formData.username,
-        formData.password,
-        formData.fname,
-        formData.lname,
-        formData.tel,
-        formData.email,
-        formData.role
+        data?.username,
+        data?.password,
+        data?.fname,
+        data?.lname,
+        data?.tel,
+        data?.email,
+        data?.role
       );
       if (response.success) {
         Swal.fire({
@@ -83,11 +83,10 @@ const UserAdminInsert = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const { username, password, fname, lname, tel, email, role } = formData;
-
     if (!username || !password || !fname || !lname || !tel || !email || !role) {
       Swal.fire({
         title: "ข้อผิดพลาด!",
@@ -98,21 +97,21 @@ const UserAdminInsert = () => {
       return;
     }
 
-    const englishOnlyRegex = /^[A-Za-z]+$/;
-    if (
-      !englishOnlyRegex.test(username) ||
-      !englishOnlyRegex.test(password) ||
-      !englishOnlyRegex.test(fname) ||
-      !englishOnlyRegex.test(lname)
-    ) {
-      Swal.fire({
-        title: "ข้อผิดพลาด!",
-        text: "กรุณากรอกชื่อผู้ใช้, รหัสผ่าน, ชื่อ และนามสกุลเป็นภาษาอังกฤษเท่านั้น",
-        icon: "warning",
-        confirmButtonText: "ตกลง",
-      });
-      return;
-    }
+    // const englishOnlyRegex = /^[A-Za-z]+$/;
+    // if (
+    //   !englishOnlyRegex.test(username) ||
+    //   !englishOnlyRegex.test(password) ||
+    //   !englishOnlyRegex.test(fname) ||
+    //   !englishOnlyRegex.test(lname)
+    // ) {
+    //   Swal.fire({
+    //     title: "ข้อผิดพลาด!",
+    //     text: "กรุณากรอกชื่อผู้ใช้, รหัสผ่าน, ชื่อ และนามสกุลเป็นภาษาอังกฤษเท่านั้น",
+    //     icon: "warning",
+    //     confirmButtonText: "ตกลง",
+    //   });
+    //   return;
+    // }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
@@ -136,7 +135,7 @@ const UserAdminInsert = () => {
       return;
     }
 
-    create(formData);
+    await create(formData);
   };
 
   return (

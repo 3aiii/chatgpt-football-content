@@ -196,6 +196,7 @@ module.exports = {
             lname: true,
             createdAt: true,
             role: true,
+            status: true,
           },
         });
 
@@ -226,6 +227,7 @@ module.exports = {
             lname: true,
             createdAt: true,
             role: true,
+            status: true,
           },
         });
 
@@ -363,21 +365,44 @@ module.exports = {
   },
   delete: async (req, res) => {
     const { userId } = req.params;
-
     try {
-      await prisma.user.delete({
-        where: { id: parseInt(userId) },
+      let dynamicStatus;
+
+      const user = await prisma.user.findUnique({
+        where: {
+          id: parseInt(userId),
+        },
       });
 
-      // await prisma.blog.delete({
-      //   where: {
-      //     user_id: parseInt(userId),
-      //   },
-      // });
+      if (user.count === 0) {
+        return res.status(400).send({
+          succes: false,
+          message: "No userId to delete",
+        });
+      }
+
+      if (user.status === "HIDDEN") {
+        dynamicStatus = {
+          status: "ACTIVE",
+        };
+      } else {
+        dynamicStatus = {
+          status: "HIDDEN",
+        };
+      }
+
+      await prisma.user.update({
+        where: {
+          id: parseInt(userId),
+        },
+        data: {
+          ...(dynamicStatus && dynamicStatus),
+        },
+      });
 
       return res.status(200).send({
         success: true,
-        message: `Deleted user successfully!`,
+        message: "Deleted user already!",
       });
     } catch (error) {
       return res.status(500).send({

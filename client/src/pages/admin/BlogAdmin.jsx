@@ -28,30 +28,56 @@ const BlogAdmin = () => {
     setTotalPages(data.pagination.totalPages);
   };
 
-  const handleRemove = async (blogId) => {
-    const confirmResult = await Swal.fire({
-      title: "คุณแน่ใจหรือไม่?",
-      text: "คุณจะไม่สามารถกู้คืนข้อมูลนี้ได้อีก!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "ยืนยันการลบ",
-      cancelButtonText: "ยกเลิก",
-    });
+  const handleRemove = async (blogId, status) => {
+    let confirmResult;
+
+    if (status === "ACTIVE") {
+      confirmResult = await Swal.fire({
+        title: "คุณแน่ใจหรือไม่?",
+        text: "คุณจะไม่สามารถกู้คืนข้อมูลนี้ได้อีก!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "ยืนยันการลบ",
+        cancelButtonText: "ยกเลิก",
+      });
+    } else {
+      confirmResult = await Swal.fire({
+        title: "คุณแน่ใจหรือไม่?",
+        text: "คุณจะกู้คืนข้อมูลนี้หรือไม่!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "ยืนยันการลบ",
+        cancelButtonText: "ยกเลิก",
+      });
+    }
 
     if (confirmResult.isConfirmed) {
       try {
         const response = await remove(blogId);
         if (response.success) {
-          Swal.fire({
-            title: "ลบสำเร็จ!",
-            text: "ข้อมูลผู้ใช้งานถูกลบเรียบร้อยแล้ว",
-            icon: "success",
-            confirmButtonText: "ตกลง",
-          }).then(() => {
-            fetchBlogs();
-          });
+          if (status === "ACTIVE") {
+            Swal.fire({
+              title: "ลบสำเร็จ!",
+              text: "ข้อมูลบทความถูกลบเรียบร้อยแล้ว",
+              icon: "success",
+              confirmButtonText: "ตกลง",
+            }).then(() => {
+              fetchBlogs();
+            });
+          } else {
+            Swal.fire({
+              title: "กู้คืนสำเร็จ!",
+              text: "ข้อมูลบทความถูกกู้คืนเรียบร้อยแล้ว",
+              icon: "success",
+              confirmButtonText: "ตกลง",
+            }).then(() => {
+              fetchBlogs();
+            });
+          }
         } else {
           Swal.fire({
             title: "เกิดข้อผิดพลาด",
@@ -185,14 +211,14 @@ const BlogAdmin = () => {
                       {blog.status === "ACTIVE" ? (
                         <button
                           className="btn-danger"
-                          onClick={() => handleRemove(blog?.id)}
+                          onClick={() => handleRemove(blog?.id, blog?.status)}
                         >
                           ลบข้อมูล
                         </button>
                       ) : (
                         <button
                           className="btn-warning"
-                          onClick={() => handleRemove(blog?.id)}
+                          onClick={() => handleRemove(blog?.id, blog?.status)}
                         >
                           คืนกลับ
                         </button>
