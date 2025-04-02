@@ -30,6 +30,8 @@ const Admin = () => {
         return "บทความทั้งหมด / เพิ่มบทความใหม่";
       case "/admin/categories":
         return "บทความทั้งหมด / หมวดหมู่ทั้งหมด";
+      case "/admin/system":
+        return "บทความทั้งหมด / ใช้งาน Generate ข้อความ";
       default:
         return "หน้าที่ไม่รู้จัก";
     }

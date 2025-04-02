@@ -105,12 +105,28 @@ const Registraion = () => {
         });
       }
     } catch (error) {
-      Swal.fire({
-        title: "เกิดข้อผิดพลาด!",
-        text: error.message,
-        icon: "error",
-        confirmButtonText: "ลองใหม่",
-      });
+      if (error.response.data.message === "This email is already taken") {
+        Swal.fire({
+          title: "เกิดข้อผิดพลาด",
+          text: "ไม่สามารถเพิ่มผู้ใช้งานได้เนื่องจากมีการใช้ email นี้ไปแล้ว",
+          icon: "warning",
+          confirmButtonText: "ตกลง",
+        });
+      } else if (error.response.data.message === "username is already exist") {
+        Swal.fire({
+          title: "เกิดข้อผิดพลาด",
+          text: "ไม่สามารถเพิ่มผู้ใช้งานได้เนื่องจากมีการใช้ username นี้ไปแล้ว",
+          icon: "warning",
+          confirmButtonText: "ตกลง",
+        });
+      } else {
+        Swal.fire({
+          title: "เกิดข้อผิดพลาด",
+          text: error.message || "ไม่สามารถเพิ่มผู้ใช้งานได้",
+          icon: "error",
+          confirmButtonText: "ตกลง",
+        });
+      }
     }
   };
 

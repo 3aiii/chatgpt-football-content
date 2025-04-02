@@ -10,7 +10,7 @@ const Navbar = () => {
   const navigate = useNavigate();
   const token = Cookies.get("token");
   const [data, setData] = useState([]);
-
+  
   const handleLogout = async () => {
     // Decode token เพื่อใช้ข้อมูล
     const decoded = jwtDecode(token);
@@ -113,7 +113,7 @@ const Navbar = () => {
               <div className="flex items-center text-white text-lg font-bold">
                 {data?.data?.fname} {data?.data?.lname}
               </div>
-              <Link to={"/edit/1"} className="btn-primary font-bold">
+              <Link to={`/edit/${data?.data?.id}`} className="btn-primary font-bold">
                 ดูข้อมูล
               </Link>
               <button className="btn-primary font-bold" onClick={handleLogout}>
