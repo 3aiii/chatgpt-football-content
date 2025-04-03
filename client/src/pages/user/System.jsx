@@ -6,6 +6,7 @@ import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import { create, saveLog } from "../../composables/useblog";
 import { useNavigate } from "react-router-dom";
+import SpeechToText from "../../components/SpeechToText";
 
 const System = () => {
   const token = Cookies.get("token");
@@ -215,19 +216,28 @@ const System = () => {
 
         {/* Input Prompt */}
         <div className="mt-6 space-y-4">
-          <input
-            type="text"
-            value={userPrompt}
-            onChange={(e) => setUserPrompt(e.target.value)}
-            placeholder="💬 พิมพ์ข้อความของคุณ..."
-            className="w-full mt-1 px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-          <button
-            onClick={handlePromptSubmit}
-            className="w-full bg-blue-500 text-white font-semibold py-3 rounded-lg shadow-md transition-all duration-300 transform hover:bg-blue-600 active:scale-95"
-          >
-            🚀 ส่งคำขอ
-          </button>
+          <div className="relative">
+            <input
+              type="text"
+              value={userPrompt}
+              onChange={(e) => setUserPrompt(e.target.value)}
+              placeholder="💬 พิมพ์ข้อความของคุณ..."
+              className="w-full px-4 py-3 pr-28 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 ease-in-out"
+            />
+            <div className="absolute top-1/2 transform -translate-y-1/2 right-1 text-gray-500">
+              <SpeechToText setPromp={setUserPrompt} />
+            </div>
+          </div>
+
+          {/* Speech to Text Button */}
+          <div className="flex justify-end items-center space-x-4">
+            <button
+              onClick={handlePromptSubmit}
+              className="w-full sm:w-auto bg-blue-500 text-white font-semibold py-3 px-6 rounded-lg shadow-md transition-all duration-300 transform hover:bg-blue-600 active:scale-95"
+            >
+              🚀 ส่งคำขอ
+            </button>
+          </div>
         </div>
 
         {/* Loading Spinner */}
